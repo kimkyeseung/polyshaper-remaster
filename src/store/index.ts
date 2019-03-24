@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { getModule } from 'vuex-module-decorators';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
 
   },
@@ -14,3 +15,5 @@ export default new Vuex.Store({
 
   },
 });
+
+export default store

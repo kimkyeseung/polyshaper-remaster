@@ -1,6 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Upload from '@/pages/upload/index.vue';
+// import Upload2 from '@/pages/upload2/index.vue';
+
+// const uploadPage = () => import(/* webpackChunkName: "Upload" */ '@/pages/upload/index.vue');
+const uploadPage = () => import(/* webpackChunkName: "Upload" */ '@/pages/upload2/index.vue');
 
 Vue.use(Router);
 
@@ -10,16 +14,16 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      // redirect: '/upload',
+      component: uploadPage
     },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    },
+    // {
+    //   path: '/upload',
+    //   name: 'upload',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (about.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: Upload,
+    // },
   ],
 });

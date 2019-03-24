@@ -5,13 +5,15 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "npm run serve"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.0.0-rc.15",
     "vue": "^2.6.6",
-    "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.0.0",
-    "vue-router": "^3.0.1",
+    "vue-class-component": "^6.3.2",
+    "vue-property-decorator": "^7.3.0",
+    "vue-router": "^3.0.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
@@ -27,7 +29,8 @@
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "typescript": "^3.2.1",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "vuex-module-decorators": "^0.9.8"
   },
   "eslintConfig": {
     "root": true,
@@ -53,5 +56,17 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kimkyeseung/polyshaper-remaster.git"
+  },
+  "author": "kimkyeseung <kimkyeseung@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kimkyeseung/polyshaper-remaster/issues"
+  },
+  "homepage": "https://github.com/kimkyeseung/polyshaper-remaster#readme"
 }
