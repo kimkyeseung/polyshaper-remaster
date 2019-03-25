@@ -1,17 +1,14 @@
 <template>
-  <form>
-    <h1>why?</h1>
-    <div>
-      <input type="file" name="2" id="1" @change="test">
-    </div>
-  </form>
+  <div class="display">
+    <h1>display</h1>
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class Test extends Vue {
+export default class Display extends Vue {
   test(ev) {
     console.log('work', ev);
   }

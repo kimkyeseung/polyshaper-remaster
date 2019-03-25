@@ -15,13 +15,24 @@
 
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStoreModule';
 import AppTitle from '@/components/app-title/index.vue';
 
 @Component({ components: { AppTitle }})
 export default class Upload extends Vue {
   private hover: boolean = false;
+
+  @Watch('uploadedImage')
+  onImageUploaded(image: string) {
+    console.log(image);
+    const imageAddress = image.split('/').pop();
+    this.$router.push(`/poly-edit/${imageAddress}`);
+  }
+
+  get uploadedImage() {
+    return ImageStore.image;
+  }
 
   uploadImageHandler(image?: string): void {
     ImageStore.uploadImage(image);

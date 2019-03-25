@@ -1,11 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Upload from '@/pages/upload/index.vue';
-// import Upload2 from '@/pages/upload2/index.vue';
-import Test from '@/pages/test/index.vue';
 
 const uploadPage = () => import(/* webpackChunkName: "Upload" */ '@/pages/upload/index.vue');
-// const uploadPage = () => import(/* webpackChunkName: "Upload" */ '@/pages/upload2/index.vue');
+const polyEditPage = () => import(/* webpackChunkName: "PolyEdit" */ '@/pages/poly-edit/index.vue');
+
 
 Vue.use(Router);
 
@@ -15,7 +13,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/upload'
+      redirect: '/upload',
     },
     {
       path: '/upload',
@@ -23,8 +21,9 @@ export default new Router({
       component: uploadPage,
     },
     {
-      path: '/test',
-      component: Test
-    }
+      path: '/poly-edit/:image',
+      name: 'poly-edit',
+      component: polyEditPage,
+    },
   ],
 });
