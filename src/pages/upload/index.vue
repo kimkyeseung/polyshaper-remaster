@@ -1,14 +1,14 @@
 <template>
   <div class="upload">
-    <h1>upload</h1>
+    <app-title />
     <div
       @drop="handleDrop"
       @dragenter="handleDragEnter"
       @dragover.prevent="handleDragOver"
       @dragleave="handleDragLeave">
       <h2>Drop the image file here</h2>
-      <input type="file" name="upload" id="upload" onChange={this.imageFileValidater}/>
-      <label htmlFor="upload" className="">or Select a image file</label>
+      <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
+      <label htmlFor="upload">or Select a image file</label>
     </div>
   </div>
 </template>
@@ -16,27 +16,26 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import imageStore from '@/store/imageStore';
+import ImageStore from '@/store/imageStoreModule';
+import AppTitle from '@/components/app-title/index.vue';
 
-@Component
+@Component({ components: { AppTitle }})
 export default class Upload extends Vue {
-  private active: boolean = false;
-
-  private target: boolean = false;
-
   private hover: boolean = false;
 
   uploadImageHandler(image?: string): void {
-    imageStore.uploadImage(image);
+    ImageStore.uploadImage(image);
   }
 
-  imageFileValidater(ev: any) {
-    let uploadedImageFile = URL.createObjectURL(ev.target.files[0]);
-    let fileExtension = ev.target.files[0].name.substring(ev.target.files[0].name.lastIndexOf('.') + 1).toLowerCase();
+  imageFileValidater(ev) {
+    const file = ev.target.files[0];
+    console.log(file);
+    let uploadedImageFile: string = URL.createObjectURL(file);
+    let fileExtension = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
 
     if (fileExtension === "png" || fileExtension === "bmp" || fileExtension === "jpeg" || fileExtension === "jpg") {
-      if (uploadedImageFile && ev.target.files[0]) {
-        let fileSize = ev.target.files[0].size;
+      if (uploadedImageFile && file) {
+        let fileSize = file.size;
         if (fileSize > 10485760) {
           alert('10MB 이상의 이미지는 업로드 불가합니다.');
           this.uploadImageHandler();
@@ -49,49 +48,34 @@ export default class Upload extends Vue {
     }
   }
 
-  dropTarget(): void {
-    if (!this.active) {
-      this.target = true;
-    }
-  }
-
-  dropLeave(ev: MouseEvent) {
-    if(ev.screenX === 0 && ev.screenY === 0) {
-      this.target = false;
-    }
-  }
-
   handleDrop(ev: any) {
     ev.preventDefault();
     ev.stopPropagation();
     const uploadObj = {
       target: ev.dataTransfer
     };
-    this.target = false;
-    this.hover = false;    
+    this.hover = false;
     this.imageFileValidater(uploadObj);
   }
 
   handleDragEnter(ev: MouseEvent) {
     ev.preventDefault();
-    if (!this.active) {
-      this.hover = true;
-    }
+    this.hover = true;
   }
 
   handleDragLeave(ev: MouseEvent) {
     this.hover = false;
   }
 
+  handleDragOver() {
+
+  }
+
   created() {
-    document.addEventListener('dragover', this.dropTarget.bind(this));
-    document.addEventListener('dragleave', this.dropLeave.bind(this));
     document.addEventListener('drop', this.handleDrop.bind(this));
   }
 
   beforeDestroy() {
-    document.removeEventListener('dragover', this.dropTarget);
-    document.removeEventListener('dragleave', this.dropLeave);
     document.removeEventListener('drop', this.handleDrop);
   }
 }

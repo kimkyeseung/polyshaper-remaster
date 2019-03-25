@@ -3,18 +3,22 @@ import store from '@/store';
 
 @Module({dynamic: true, name:'imageStore', store})
 class ImageStore extends VuexModule {
-  private image: ImageData | string | null = null;
+  public image: string | null = null;
 
-  @Mutation updateImage(image: ImageData | string): void {
+  @Mutation
+  updateImage(image: string): void {
+    console.log('ok');
     this.image = image;
   }
 
-  @Mutation deleteImage(): void {
+  @Mutation
+  deleteImage(): void {
     this.image = null;
   }
 
   @Action
-  uploadImage(image?: ImageData | string): void {
+  uploadImage(image?: string): void {
+    console.log('work', image);
     if (image) {
       this.context.commit('updateImage', image);
     } else {
