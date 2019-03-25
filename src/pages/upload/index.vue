@@ -17,6 +17,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStoreModule';
+import { InputFileEvent } from '@/models/interfaces';
 import AppTitle from '@/components/app-title/index.vue';
 
 @Component({ components: { AppTitle }})
@@ -38,8 +39,8 @@ export default class Upload extends Vue {
     ImageStore.uploadImage(image);
   }
 
-  imageFileValidater(ev) {
-    const file = ev.target.files[0];
+  imageFileValidater({ target }: InputFileEvent ) {
+    const file: File = target.files[0];
     console.log(file);
     let uploadedImageFile: string = URL.createObjectURL(file);
     let fileExtension = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();

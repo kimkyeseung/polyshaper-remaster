@@ -7,3 +7,11 @@ export interface MousePosition {
   x: number;
   y: number;
 }
+
+export interface InputFileEvent {
+  target: FileList | DataTransfer;
+}
+
+interface FileList {
+  files: File[];
+}

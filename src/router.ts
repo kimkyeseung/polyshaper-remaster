@@ -30,11 +30,9 @@ const router: Router = new Router({
 
 
 router.beforeEach((to: Route, from: Route, next: Function) => {
-
   console.log(to, 'to');
-  console.log(from, 'from')
+  console.log(from, 'from');
   return next();
-
 });
 
-export default router
+export default router;

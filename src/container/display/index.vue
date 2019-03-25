@@ -30,10 +30,10 @@ export default class Display extends Vue {
   };
 
   get uploadedImage(): string {
-    return ImageStore.image;
+    return <string>ImageStore.image;
   }
 
-  handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }): void {
+  handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
     this.getImageData(img);
   }
 
@@ -49,7 +49,7 @@ export default class Display extends Vue {
   }
 
   makeVertexOnCanvas({ offsetX: x, offsetY: y}: MouseEvent, canvas: HTMLCanvasElement) {
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
+    const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
 
     context.beginPath();
     context.arc(x * this.scaleFixRatio.x, y * this.scaleFixRatio.y, 3, 0, Math.PI * 2);
@@ -59,7 +59,7 @@ export default class Display extends Vue {
   }
 
   mounted() {
-    window.addEventListener('resize', this.getImageData.bind(this, this.$refs.image));
+    window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
   }
 }
 
