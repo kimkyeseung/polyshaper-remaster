@@ -12,9 +12,6 @@ import { Display, Controller } from '@/container';
 
 @Component({ components: { Display, Controller } })
 export default class PolyEdit extends Vue {
-  test(ev) {
-    console.log('work', ev);
-  }
 }
 
 </script>

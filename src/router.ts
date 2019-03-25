@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import Router, { Route } from 'vue-router';
 
 const uploadPage = () => import(/* webpackChunkName: "Upload" */ '@/pages/upload/index.vue');
 const polyEditPage = () => import(/* webpackChunkName: "PolyEdit" */ '@/pages/poly-edit/index.vue');
@@ -7,7 +7,7 @@ const polyEditPage = () => import(/* webpackChunkName: "PolyEdit" */ '@/pages/po
 
 Vue.use(Router);
 
-export default new Router({
+const router: Router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -27,3 +27,14 @@ export default new Router({
     },
   ],
 });
+
+
+router.beforeEach((to: Route, from: Route, next: Function) => {
+
+  console.log(to, 'to');
+  console.log(from, 'from')
+  return next();
+
+});
+
+export default router

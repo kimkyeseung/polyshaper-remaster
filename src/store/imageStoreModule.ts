@@ -7,7 +7,6 @@ class ImageStore extends VuexModule {
 
   @Mutation
   updateImage(image: string): void {
-    console.log('ok');
     this.image = image;
   }
 
@@ -18,7 +17,6 @@ class ImageStore extends VuexModule {
 
   @Action
   uploadImage(image?: string): void {
-    console.log('work', image);
     if (image) {
       this.context.commit('updateImage', image);
     } else {

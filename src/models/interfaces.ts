@@ -2,3 +2,8 @@ export interface TitleModel {
   main: string;
   sub: string;
 }
+
+export interface MousePosition {
+  x: number;
+  y: number;
+}
