@@ -18,7 +18,7 @@ interface FileList {
 
 export interface Vertex extends MousePosition{
   vertexId: number;
-  next: [ Vertex?, Vertex? ];
+  next: Vertex[];
 }
 
 export interface Face {
