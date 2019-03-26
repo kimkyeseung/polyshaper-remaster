@@ -1,7 +1,9 @@
-import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators';
+import {
+  VuexModule, Module, Mutation, Action, getModule,
+} from 'vuex-module-decorators';
 import store from '@/store';
 
-@Module({dynamic: true, name:'imageStore', store})
+@Module({ dynamic: true, name: 'imageStore', store })
 class ImageStore extends VuexModule {
   public image: string | null = null;
 

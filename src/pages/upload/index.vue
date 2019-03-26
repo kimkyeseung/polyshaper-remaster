@@ -20,13 +20,12 @@ import ImageStore from '@/store/imageStoreModule';
 import { InputFileEvent } from '@/models/interfaces';
 import AppTitle from '@/components/app-title/index.vue';
 
-@Component({ components: { AppTitle }})
+@Component({ components: { AppTitle } })
 export default class Upload extends Vue {
   private hover: boolean = false;
 
   @Watch('uploadedImage')
   onImageUploaded(image: string) {
-    console.log(image);
     const imageAddress = image.split('/').pop();
     this.$router.push(`/poly-edit/${imageAddress}`);
   }
@@ -39,15 +38,14 @@ export default class Upload extends Vue {
     ImageStore.uploadImage(image);
   }
 
-  imageFileValidater({ target }: InputFileEvent ) {
+  imageFileValidater({ target }: InputFileEvent) {
     const file: File = target.files[0];
-    console.log(file);
-    let uploadedImageFile: string = URL.createObjectURL(file);
-    let fileExtension = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
+    const uploadedImageFile: string = URL.createObjectURL(file);
+    const fileExtension = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
 
-    if (fileExtension === "png" || fileExtension === "bmp" || fileExtension === "jpeg" || fileExtension === "jpg") {
+    if (fileExtension === 'png' || fileExtension === 'bmp' || fileExtension === 'jpeg' || fileExtension === 'jpg') {
       if (uploadedImageFile && file) {
-        let fileSize = file.size;
+        const fileSize = file.size;
         if (fileSize > 10485760) {
           alert('10MB 이상의 이미지는 업로드 불가합니다.');
           this.uploadImageHandler();
@@ -64,7 +62,7 @@ export default class Upload extends Vue {
     ev.preventDefault();
     ev.stopPropagation();
     const uploadObj = {
-      target: ev.dataTransfer
+      target: ev.dataTransfer,
     };
     this.hover = false;
     this.imageFileValidater(uploadObj);

@@ -3,5 +3,5 @@ import Display from './display/index.vue';
 
 export {
   Controller,
-  Display
+  Display,
 };
