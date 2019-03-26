@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { TitleModel } from '@/models/interfaces';
-import uiStore from '@/store/uiStoreModule';
+import uiStore from '@/store/uiStore';
 
 @Component
 export default class AppTitle extends Vue {

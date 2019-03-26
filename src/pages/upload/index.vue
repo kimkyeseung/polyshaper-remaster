@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import ImageStore from '@/store/imageStoreModule';
+import ImageStore from '@/store/imageStore';
 import { InputFileEvent } from '@/models/interfaces';
 import AppTitle from '@/components/app-title/index.vue';
 

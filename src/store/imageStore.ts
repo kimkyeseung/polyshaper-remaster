@@ -8,17 +8,17 @@ class ImageStore extends VuexModule {
   public image: string | null = null;
 
   @Mutation
-  updateImage(image: string): void {
+  updateImage(image: string) {
     this.image = image;
   }
 
   @Mutation
-  deleteImage(): void {
+  deleteImage() {
     this.image = null;
   }
 
   @Action
-  uploadImage(image?: string): void {
+  uploadImage(image?: string) {
     if (image) {
       this.context.commit('updateImage', image);
     } else {

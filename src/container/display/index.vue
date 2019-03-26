@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import ImageStore from '@/store/imageStoreModule';
+import ImageStore from '@/store/imageStore';
 import { MousePosition } from '@/models/interfaces';
 
 @Component
@@ -38,7 +38,6 @@ export default class Display extends Vue {
   }
 
   getImageData(img: HTMLImageElement) {
-    console.log('get image', img);
     this.canvasWidth = img.naturalWidth;
     this.canvasHeight = img.naturalHeight;
     this.scaleFixRatio.x = img.naturalWidth / img.width;
