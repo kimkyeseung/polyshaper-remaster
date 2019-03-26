@@ -5,7 +5,10 @@ import store from './store/index';
 
 import '@/styles/style.scss';
 
+import VueSVGIcon from 'vue-svgicon';
+
 Vue.config.productionTip = false;
+Vue.use(VueSVGIcon);
 
 new Vue({
   router,

@@ -8,11 +8,12 @@
           @dragenter="handleDragEnter"
           @dragover.prevent="handleDragOver"
           @dragleave="handleDragLeave"
-          class="upload__drop-zone"
+          :class="`upload__drop-zone ${hover ? 'drop-target' : ''}`"
           >
+          <svgicon icon="file-upload-outline" width="60" height="60"></svgicon>
           <h2>Drop the image file here</h2>
           <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
-          or Select a image file
+          <p>or Select a image file</p>
         </div>
       </label>
     </div>

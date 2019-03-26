@@ -35,6 +35,19 @@
         font: $font-sub-en;
       }
 
+      p {
+        color: $color-achromatic6;
+        font: $font-contents-en;
+      }
+
+      &.drop-target {
+        border-color: $color-main;
+        border-style: solid;
+
+        h2, p {
+          color: $color-main;
+        }
+      }
     }
   }
 }

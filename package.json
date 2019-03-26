@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "npm run serve"
+    "start": "npm run serve",
+    "generate-icons": "vsvg -s ./public/icons -t ./src/compiled-icons ts --es6"
   },
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.15",
