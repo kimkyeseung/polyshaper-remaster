@@ -1,29 +1,41 @@
+.upload {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .dropbox {
-    outline: 2px dashed grey; /* the dash box */
-    outline-offset: -10px;
-    background: lightcyan;
-    color: dimgray;
-    padding: 10px 10px;
-    min-height: 200px; /* minimum height */
-    position: relative;
-    cursor: pointer;
+  .upload__contents {
+    width: 600px;
+    padding: 120px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, .15);
+
+    .upload__drop-zone {
+      background: $color-achromatic3;
+      border: 4px dashed $color-achromatic4;
+      border-radius: 12px;
+      margin-top: 50px;
+      height: 200px;
+      cursor: pointer;
+
+      &:hover {
+        background: $color-achromatic2;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      h2 {
+        margin-top: 20px;
+        color: $color-achromatic5;
+        font: $font-sub-en;
+      }
+
+    }
   }
-  
-  .input-file {
-    opacity: 0; /* invisible but it's there! */
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    cursor: pointer;
-  }
-  
-  .dropbox:hover {
-    background: lightblue; /* when mouse over to the drop zone, change color */
-  }
-  
-  .dropbox p {
-    font-size: 1.2em;
-    text-align: center;
-    padding: 50px 0;
-  }
+}
+ 

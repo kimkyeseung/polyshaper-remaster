@@ -6,7 +6,7 @@ import { TitleModel } from '@/models/interfaces';
 class uiStore extends VuexModule {
   public title: TitleModel = {
     main: 'Polyshaper',
-    sub: 'remaster',
+    sub: 'REMASTER',
   };
 }
 

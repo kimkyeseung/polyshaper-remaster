@@ -1,6 +1,6 @@
-body {
-  background: #333333;
-}
+@import './generic/font.scss';
+@import './generic/reset.scss';
+@import './generic/color.scss';
 
 @import './pages/upload.scss';
 @import './pages/poly-edit.scss';
@@ -8,5 +8,8 @@ body {
 @import './components/app-title.scss';
 @import './components/controller.scss';
 @import './components/display.scss';
+@import './components/app.scss';
 
-@import './generic/reset.scss';
+body {
+  background: $color-achromatic9;
+}

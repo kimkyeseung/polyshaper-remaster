@@ -1,14 +1,20 @@
 <template>
   <div class="upload">
-    <app-title />
-    <div
-      @drop="handleDrop"
-      @dragenter="handleDragEnter"
-      @dragover.prevent="handleDragOver"
-      @dragleave="handleDragLeave">
-      <h2>Drop the image file here</h2>
-      <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
-      <label htmlFor="upload">or Select a image file</label>
+    <div class="upload__contents">
+      <app-title />
+      <label htmlFor="upload">
+        <div
+          @drop="handleDrop"
+          @dragenter="handleDragEnter"
+          @dragover.prevent="handleDragOver"
+          @dragleave="handleDragLeave"
+          class="upload__drop-zone"
+          >
+          <h2>Drop the image file here</h2>
+          <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
+          or Select a image file
+        </div>
+      </label>
     </div>
   </div>
 </template>
