@@ -10,7 +10,7 @@
         :src="uploadedImage"
         alt="user uploaded image"
         ref="image"
-        @load="getImageData"/>
+        @load="handleImageLoad"/>
     </div>
   </div>
 </template>
@@ -38,6 +38,7 @@ export default class Display extends Vue {
   }
 
   getImageData(img: HTMLImageElement) {
+    console.log('get image', img);
     this.canvasWidth = img.naturalWidth;
     this.canvasHeight = img.naturalHeight;
     this.scaleFixRatio.x = img.naturalWidth / img.width;
@@ -48,14 +49,10 @@ export default class Display extends Vue {
     this.makeVertexOnCanvas(ev, ev.currentTarget as HTMLCanvasElement);
   }
 
-  makeVertexOnCanvas({ offsetX: x, offsetY: y}: MouseEvent, canvas: HTMLCanvasElement) {
-    const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
-
-    context.beginPath();
-    context.arc(x * this.scaleFixRatio.x, y * this.scaleFixRatio.y, 3, 0, Math.PI * 2);
-
-    context.fillStyle = 'red';
-    context.fill();
+  makeVertexOnCanvas({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
+    const x = offsetX * this.scaleFixRatio.x;
+    const y = offsetY * this.scaleFixRatio.y;
+    this.$makeVertex({ x, y }, canvas);
   }
 
   mounted() {
