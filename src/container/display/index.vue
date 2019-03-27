@@ -64,11 +64,11 @@ export default class Display extends Vue {
     };
     this.vertices.push(newVertex);
     if (this.vertices.length === 3) {
-      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices);
+      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, canvas);
     }
   }
 
-  makeFace(vertices: [ Vertex, Vertex, Vertex ]) {
+  makeFace(vertices: [ Vertex, Vertex, Vertex ], canvas: HTMLCanvasElement) {
     vertices[0].next.push(vertices[1], vertices[2]);
     vertices[1].next.push(vertices[0], vertices[2]);
     vertices[2].next.push(vertices[0], vertices[1]);
@@ -82,9 +82,8 @@ export default class Display extends Vue {
       PolyStore.addVertex(vertex);
     })
     PolyStore.addFace(newFace);
+    Vue.prototype.$makeFaceOnCanvas(newFace, canvas);
     this.vertices.length = 0;
-    console.log(PolyStore.vertices);
-    console.log(PolyStore.faces);
   }
 
   mounted() {
