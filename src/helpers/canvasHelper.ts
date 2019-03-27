@@ -13,10 +13,10 @@ const canvasHelper = {
 
     vue.prototype.$makeFaceOnCanvas = ({ color, vertices }: Face, canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
-      vertices.forEach(vertex => {
+      vertices.forEach((vertex) => {
         context.beginPath();
         context.moveTo(vertex.x, vertex.y);
-        vertex.next.forEach(next => {
+        vertex.next.forEach((next) => {
           context.lineTo(next.x, next.y);
         });
         context.closePath();
@@ -33,7 +33,7 @@ const canvasHelper = {
     vue.clearCanvas = (canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    };
   },
 };
 

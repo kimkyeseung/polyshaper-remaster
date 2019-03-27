@@ -1,10 +1,9 @@
 function deepClone(obj) {
-  if (obj === null || typeof(obj) !== 'object')
-  return obj;
+  if (obj === null || typeof (obj) !== 'object') return obj;
 
-  let copy = obj.constructor();
+  const copy = obj.constructor();
 
-  for (let attr in obj) {
+  for (const attr in obj) {
     if (obj.hasOwnProperty(attr)) {
       copy[attr] = deepClone(obj[attr]);
     }

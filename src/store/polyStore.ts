@@ -7,6 +7,7 @@ import { Vertex, Face } from '@/models/interfaces';
 @Module({ dynamic: true, name: 'polyStore', store })
 class PolyStore extends VuexModule {
   public vertices: Vertex[] = [];
+
   public faces: Face[] = [];
 
   @Mutation

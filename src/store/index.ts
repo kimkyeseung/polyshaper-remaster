@@ -5,7 +5,7 @@ import createPersistedState from 'vuex-persistedstate';
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-  plugins: [ createPersistedState({
+  plugins: [createPersistedState({
     key: 'poly',
     paths: ['imageStore'],
     // getState(key, storage) {
@@ -19,7 +19,7 @@ const store = new Vuex.Store({
     //     image: state[paths[0]].image
     //   };
     // }
-  }) ],
+  })],
 });
 
 export default store;
