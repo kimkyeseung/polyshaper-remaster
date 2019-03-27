@@ -19,6 +19,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import PolyStore from '@/store/polyStore';
+import { cloneDeep } from 'lodash';
 import { MousePosition, Vertex, Face } from '@/models/interfaces';
 
 @Component
@@ -53,7 +54,8 @@ export default class Display extends Vue {
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
     const x = offsetX * this.scaleFixRatio.x;
     const y = offsetY * this.scaleFixRatio.y;
-    this.$makeVertexOnCanvas({ x, y }, canvas);
+
+    Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas);
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.length + this.vertices.length,
       x,
@@ -72,10 +74,10 @@ export default class Display extends Vue {
     vertices[2].next.push(vertices[0], vertices[1]);
 
     const newFace: Face = {
-      faceId: PolyStore.faces.length,
+      faceId: PolyStore.faces.length || 0,
       color: 'red', // gonna change
-      vertices: this.vertices,
-    }
+      vertices: cloneDeep(this.vertices),
+    };
     this.vertices.forEach((vertex: Vertex) => {
       PolyStore.addVertex(vertex);
     })

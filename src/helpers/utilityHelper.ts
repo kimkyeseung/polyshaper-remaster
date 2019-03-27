@@ -1,22 +1,21 @@
-function deepClone<T>(object: T, finalObj: T): T {
-  const newObject = finalObj || {};
-  for (let key in object) {
-    let prop = object[key];
-    if (prop === newObject) {
-      continue;
-    }
-    if (typeof prop === 'object') {
-      object[key] = prop.constructor === Array ? deepClone(prop, []) : Object.create(prop);
-    } else {
-      object[key] = prop;
+function deepClone(obj) {
+  if (obj === null || typeof(obj) !== 'object')
+  return obj;
+
+  let copy = obj.constructor();
+
+  for (let attr in obj) {
+    if (obj.hasOwnProperty(attr)) {
+      copy[attr] = deepClone(obj[attr]);
     }
   }
-  return <T>newObject;
+
+  return copy;
 }
 
 const utilityHelper = {
   install(vue) {
-    vue.prototype.deepClone = deepClone;
+    vue.prototype.$deepClone = deepClone;
   },
 };
 
