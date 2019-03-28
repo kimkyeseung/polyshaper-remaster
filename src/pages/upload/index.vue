@@ -16,7 +16,10 @@
         </div>
       </label>
     </div>
-    <b-modal ref="storedImageModal" @ok="uploadImageHandler(storedImage)"/>
+    <b-modal ref="storedImageModal" @ok="uploadImageHandler(storedImage)" title="Polyshaper">
+      <p>기존에 작업하던 이미지가 남아있습니다.</p>
+      <p> 이어서 진행하시겠습니까?</p>
+    </b-modal>
   </div>
 </template>
 
