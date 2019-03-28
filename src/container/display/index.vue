@@ -1,11 +1,17 @@
 <template>
   <div class="display">
-    <div class="display__contents">
+    <div
+      class="display__contents"
+      ref="canvasWrap"
+      @click="handleClick">
       <canvas
-        class="display__canvas"
+        name="guide"
         :width="canvasWidth"
-        :height="canvasHeight"
-        @click="handleClick"/>
+        :height="canvasHeight"/>
+      <canvas
+        name="poly"
+        :width="canvasWidth"
+        :height="canvasHeight"/>
       <img
         :src="uploadedImage"
         alt="user uploaded image"
@@ -32,8 +38,12 @@ export default class Display extends Vue {
     y: 0,
   };
 
+  private guideCanvas: HTMLCanvasElement;
+  private polyCanvas: HTMLCanvasElement;
+
   public $refs!: {
-    image: HTMLImageElement
+    image: HTMLImageElement;
+    canvasWrap: HTMLDivElement;
   }
 
   get uploadedImage(): string {
@@ -68,7 +78,7 @@ export default class Display extends Vue {
   }
 
   handleClick(ev: MouseEvent) {
-    this.makeVertex(ev, ev.currentTarget as HTMLCanvasElement);
+    this.makeVertex(ev, this.guideCanvas);
   }
 
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
@@ -84,7 +94,7 @@ export default class Display extends Vue {
     };
     this.vertices.push(newVertex);
     if (this.vertices.length === 3) {
-      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, canvas);
+      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, this.polyCanvas);
     }
   }
 
@@ -102,12 +112,15 @@ export default class Display extends Vue {
       PolyStore.addVertex(vertex);
     })
     PolyStore.addFace(newFace);
+    Vue.prototype.$clearCanvas(this.guideCanvas);
     Vue.prototype.$makeFaceOnCanvas(newFace, canvas);
     this.vertices.length = 0;
   }
 
   mounted() {
     window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
+    this.guideCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide');
+    this.polyCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly');
   }
 }
 

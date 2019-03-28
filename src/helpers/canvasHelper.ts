@@ -25,14 +25,13 @@ const canvasHelper = {
       });
     };
 
+    vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
+      const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    };
 
     vue.blinkVertex = ({ x, y }: MousePosition, canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
-    };
-
-    vue.clearCanvas = (canvas: HTMLCanvasElement) => {
-      const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
-      context.clearRect(0, 0, canvas.width, canvas.height);
     };
   },
 };
