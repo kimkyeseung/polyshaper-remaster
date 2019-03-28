@@ -6,10 +6,9 @@
         <div
           @drop="handleDrop"
           @dragenter="handleDragEnter"
-          @dragover.prevent="handleDragOver"
+          @dragover.prevent="() => {}"
           @dragleave="handleDragLeave"
-          :class="`upload__drop-zone ${hover ? 'drop-target' : ''}`"
-          >
+          :class="`upload__drop-zone ${hover ? 'drop-target' : ''}`">
           <svgicon icon="file-upload-outline" width="60" height="60"></svgicon>
           <h2>Drop the image file here</h2>
           <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
@@ -17,6 +16,7 @@
         </div>
       </label>
     </div>
+    <b-modal ref="storedImageModal" @ok="uploadImageHandler(storedImage)"/>
   </div>
 </template>
 
@@ -25,11 +25,18 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import { InputFileEvent } from '@/models/interfaces';
-import AppTitle from '@/components/app-title/index.vue';
+import { AppTitle } from '@/components';
+import { Modal } from 'bootstrap-vue';
 
 @Component({ components: { AppTitle } })
 export default class Upload extends Vue {
   private hover: boolean = false;
+
+  private storedImage: string;
+
+  public $refs!: {
+    storedImageModal: Modal;
+  }
 
   @Watch('uploadedImage')
   onImageUploaded(image: string) {
@@ -84,12 +91,17 @@ export default class Upload extends Vue {
     this.hover = false;
   }
 
-  handleDragOver() {
-
-  }
-
   created() {
     document.addEventListener('drop', this.handleDrop.bind(this));
+  }
+
+  mounted() {
+    const storedData = JSON.parse(localStorage.getItem('poly'));
+    const storedImage = storedData.image;
+    if (storedImage) {
+      this.storedImage = storedImage;
+      this.$refs.storedImageModal.show();
+    }
   }
 
   beforeDestroy() {

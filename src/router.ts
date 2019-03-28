@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router, { Route } from 'vue-router';
+import { Dictionary } from 'vuex';
 
 const uploadPage = () => import(/* webpackChunkName: "Upload" */ '@/pages/upload/index.vue');
 const polyEditPage = () => import(/* webpackChunkName: "PolyEdit" */ '@/pages/poly-edit/index.vue');
@@ -30,8 +31,7 @@ const router: Router = new Router({
 
 
 router.beforeEach((to: Route, from: Route, next: Function) => {
-  console.log(to, 'to');
-  console.log(from, 'from');
+  console.log('refresh');
   return next();
 });
 

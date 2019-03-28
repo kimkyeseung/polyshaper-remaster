@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import PolyStore from '@/store/polyStore';
 import { cloneDeep } from 'lodash';
@@ -32,12 +32,20 @@ export default class Display extends Vue {
     y: 0,
   };
 
+  public $refs!: {
+    image: HTMLImageElement
+  }
+
   get uploadedImage(): string {
+    if (!ImageStore.image) {
+      ImageStore.getImageFromStorage();
+    }
     return <string>ImageStore.image;
   }
 
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
     this.getImageData(img);
+    this.setImageDataToStore(img);
   }
 
   getImageData(img: HTMLImageElement) {
@@ -45,6 +53,18 @@ export default class Display extends Vue {
     this.canvasHeight = img.naturalHeight;
     this.scaleFixRatio.x = img.naturalWidth / img.width;
     this.scaleFixRatio.y = img.naturalHeight / img.height;
+  }
+
+  setImageDataToStore(img: HTMLImageElement) {
+    const temporaryCanvas = document.createElement('canvas');
+    temporaryCanvas.width = img.width;
+    temporaryCanvas.height = img.height;
+
+    const temporaryContext = temporaryCanvas.getContext('2d');
+    temporaryContext.drawImage(img, 0, 0);
+
+    const dataUrl = temporaryCanvas.toDataURL('image/png');
+    ImageStore.uploadImageToStorage(dataUrl/* .replace(/^data:image\/(png|jpg);base64,/, "") */);
   }
 
   handleClick(ev: MouseEvent) {

@@ -13,17 +13,38 @@ class ImageStore extends VuexModule {
   }
 
   @Mutation
+  saveImageToStorage(imageUrl: string) {
+    const imageData = { image: imageUrl };
+    localStorage.setItem('poly', JSON.stringify(imageData));
+  }
+
+  @Mutation
+  loadImageFromStorage() {
+    const storedData = JSON.parse(localStorage.getItem('poly'));
+    const storedImage = storedData.image;
+    this.image = storedImage;
+  }
+
+  @Mutation
   deleteImage() {
     this.image = null;
   }
 
   @Action
   uploadImage(image?: string) {
-    if (image) {
-      this.context.commit('updateImage', image);
-    } else {
-      this.context.commit('deleteImage');
-    }
+    image
+      ? this.context.commit('updateImage', image)
+      : this.context.commit('deleteImage');
+  }
+
+  @Action
+  uploadImageToStorage(imageUrl: string) {
+    this.context.commit('saveImageToStorage', imageUrl);
+  }
+
+  @Action
+  getImageFromStorage() {
+    this.context.commit('loadImageFromStorage');
   }
 }
 
