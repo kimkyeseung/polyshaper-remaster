@@ -12,6 +12,11 @@
         name="poly"
         :width="canvasWidth"
         :height="canvasHeight"/>
+      <canvas
+        name="imageCopy"
+        v-show="false"
+        :width="canvasWidth"
+        :height="canvasHeight"/>
       <img
         :src="uploadedImage"
         alt="user uploaded image"
@@ -40,6 +45,7 @@ export default class Display extends Vue {
 
   private guideCanvas: HTMLCanvasElement;
   private polyCanvas: HTMLCanvasElement;
+  private imageCopy: HTMLCanvasElement;
 
   public $refs!: {
     image: HTMLImageElement;
@@ -56,6 +62,7 @@ export default class Display extends Vue {
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
     this.getImageData(img);
     this.setImageDataToStore(img);
+    this.imageCopyToCanvas();
   }
 
   getImageData(img: HTMLImageElement) {
@@ -75,6 +82,11 @@ export default class Display extends Vue {
 
     const dataUrl = temporaryCanvas.toDataURL('image/png');
     ImageStore.uploadImageToStorage(dataUrl/* .replace(/^data:image\/(png|jpg);base64,/, "") */);
+  }
+
+  imageCopyToCanvas() {
+    const context = this.imageCopy.getContext('2d');
+    context.drawImage(this.$refs.image, 0, 0);
   }
 
   handleClick(ev: MouseEvent) {
@@ -121,6 +133,7 @@ export default class Display extends Vue {
     window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
     this.guideCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide');
     this.polyCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly');
+    this.imageCopy = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy');
   }
 }
 
