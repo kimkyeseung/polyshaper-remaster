@@ -115,14 +115,15 @@ export default class Display extends Vue {
     vertices[1].next.push(vertices[0], vertices[2]);
     vertices[2].next.push(vertices[0], vertices[1]);
 
+
     const newFace: Face = {
       faceId: PolyStore.faces.length || 0,
-      color: 'red', // gonna change
+      color: Vue.prototype.$getColorAverage(vertices, this.imageCopy, ImageStore.image), // gonna change
       vertices: cloneDeep(this.vertices),
     };
     this.vertices.forEach((vertex: Vertex) => {
       PolyStore.addVertex(vertex);
-    })
+    });
     PolyStore.addFace(newFace);
     Vue.prototype.$clearCanvas(this.guideCanvas);
     Vue.prototype.$makeFaceOnCanvas(newFace, canvas);

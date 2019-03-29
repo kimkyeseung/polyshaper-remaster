@@ -26,3 +26,9 @@ export interface Face {
   color: string;
   vertices: [ Vertex, Vertex, Vertex ];
 }
+
+export interface ColorData {
+  r: number;
+  g: number;
+  b: number;
+}
