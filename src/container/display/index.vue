@@ -31,7 +31,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import PolyStore from '@/store/polyStore';
 import { cloneDeep } from 'lodash';
-import { MousePosition, Vertex, Face } from '@/models/interfaces';
+import { MousePosition, Vertex, Face, ColorData } from '@/models/interfaces';
 
 @Component
 export default class Display extends Vue {
@@ -115,10 +115,11 @@ export default class Display extends Vue {
     vertices[1].next.push(vertices[0], vertices[2]);
     vertices[2].next.push(vertices[0], vertices[1]);
 
+    const color: ColorData = Vue.prototype.$getColorAverage(vertices, this.imageCopy, ImageStore.image);
 
     const newFace: Face = {
       faceId: PolyStore.faces.length || 0,
-      color: Vue.prototype.$getColorAverage(vertices, this.imageCopy, ImageStore.image), // gonna change
+      color: Vue.prototype.$stringifyColorData(color),
       vertices: cloneDeep(this.vertices),
     };
     this.vertices.forEach((vertex: Vertex) => {

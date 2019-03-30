@@ -1,3 +1,5 @@
+import { ColorData } from '@/models/interfaces';
+
 function deepClone(obj) {
   if (obj === null || typeof (obj) !== 'object') return obj;
 
@@ -15,6 +17,8 @@ function deepClone(obj) {
 const utilityHelper = {
   install(vue) {
     vue.prototype.$deepClone = deepClone;
+
+    vue.prototype.$stringifyColorData = ({ r, g, b }: ColorData): string => `rgb(${r}, ${g}, ${b})`;
   },
 };
 
