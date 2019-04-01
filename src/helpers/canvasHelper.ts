@@ -2,19 +2,21 @@ import { MousePosition, Face, ColorData } from '@/models/interfaces';
 
 const canvasHelper = {
   install(vue) {
-    vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement) => {
-      const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
-      context.beginPath();
-      context.arc(x, y, 3, 0, Math.PI * 2);
-      context.fillStyle = 'red';
-      context.fill();
-      // vue.blinkVertex({ x, y }, canvas);
-      vue.animatedVertexStack.push({ x, y });
-      vue.blinkAnimation(canvas);
+    vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, animated: boolean) => {
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      if (animated) {
+        vue.animatedVertexStack.push({ x, y });
+        vue.blinkAnimation(canvas);
+      } else {
+        context.beginPath();
+        context.arc(x, y, 3, 0, Math.PI * 2);
+        context.fillStyle = 'red';
+        context.fill(); 
+      }
     };
 
     vue.prototype.$makeFaceOnCanvas = ({ color, vertices }: Face, canvas: HTMLCanvasElement) => {
-      const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
       vertices.forEach((vertex) => {
         context.beginPath();
         context.moveTo(vertex.x, vertex.y);
@@ -31,12 +33,12 @@ const canvasHelper = {
     };
 
     vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
-      const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
 
     vue.prototype.$getColorAverage = (vertices: Face["vertices"], canvas: HTMLCanvasElement, imageData: string): ColorData => {
-      const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
       const [{ x: x1, y: y1 }, { x: x2, y: y2 }, { x: x3, y: y3 }] = vertices;
       context.save();
       context.beginPath();
@@ -96,7 +98,7 @@ const canvasHelper = {
     vue.animatedVertexStack = [];
 
     vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
-      const context = canvas.getContext('2d');
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
       function blink(timestamp) {
         let start: number = timestamp % 1000;

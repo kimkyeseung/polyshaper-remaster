@@ -29,6 +29,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
+import UiStore from '@/store/uiStore';
 import PolyStore from '@/store/polyStore';
 import { cloneDeep } from 'lodash';
 import { MousePosition, Vertex, Face, ColorData } from '@/models/interfaces';
@@ -57,6 +58,10 @@ export default class Display extends Vue {
       ImageStore.getImageFromStorage();
     }
     return <string>ImageStore.image;
+  }
+
+  get isAnimated(): boolean {
+    return UiStore.isAnimated;
   }
 
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
@@ -97,7 +102,7 @@ export default class Display extends Vue {
     const x = offsetX * this.scaleFixRatio.x;
     const y = offsetY * this.scaleFixRatio.y;
 
-    Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas);
+    Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.length + this.vertices.length,
       x,
