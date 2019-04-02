@@ -3,6 +3,7 @@
     <div
       class="display__contents"
       ref="canvasWrap"
+      @mousemove="positionChecker"
       @click="handleClick">
       <canvas
         name="guide"
@@ -134,6 +135,31 @@ export default class Display extends Vue {
     Vue.prototype.$clearCanvas(this.guideCanvas);
     Vue.prototype.$makeFaceOnCanvas(newFace, canvas);
     this.vertices.length = 0;
+  }
+
+  positionChecker({ offsetX, offsetY }) {
+    const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
+    const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
+    const p = [ offsetX, offsetY ];
+    PolyStore.faces.forEach(face => {
+      let a = [ face.vertices[0].x, face.vertices[0].y ];
+      let b = [ face.vertices[1].x, face.vertices[1].y ];
+      let c = [ face.vertices[2].x, face.vertices[2].y ];
+      let v0 = vector(a, c);
+      let v1 = vector(a, b);
+      let v2 = vector(a, p);
+      let dot00 = dot(v0, v0);
+      let dot01 = dot(v0, v1);
+      let dot02 = dot(v0, v2);
+      let dot11 = dot(v1, v1);
+      let dot12 = dot(v1, v2);
+      let invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+      let u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+      let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+      if ((u >= 0) && (v >= 0) && (u + v < 1)) {
+        console.log(face.faceId);
+      }
+    });
   }
 
   mounted() {
