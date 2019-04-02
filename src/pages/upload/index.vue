@@ -1,7 +1,7 @@
 <template>
   <div class="upload">
     <div class="upload__contents">
-      <app-title />
+      <app-title className="upload__title"/>
       <label htmlFor="upload">
         <div
           @drop="handleDrop"

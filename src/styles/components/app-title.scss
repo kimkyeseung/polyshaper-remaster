@@ -1,17 +1,12 @@
 .app-title {
   .app-title__main {
-    font: 120px/140px $font-brand;
+    font-family: $font-brand;
     color: $color-main;
   }
 
   .app-title__sub {
     display: inline-block;
-    padding: 3px 9px;
     text-align: right;
-    font: $font-sub-en;
     color: $color-main;
-    border: 4px solid $color-main;
-    border-radius: 60px;
-    margin-left: 460px;
   }
 }

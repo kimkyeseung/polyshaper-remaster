@@ -1,5 +1,19 @@
 .controller {
-  background: white;
   width: 320px;
   margin-left: calc(100% - 320px);
+
+  .controller__title {
+    margin-top: 40px;
+    h1 {
+      font-size: 40px;
+      line-height: 50px;
+    }
+    p {
+      font: 900 12px/24px $font-main-en;
+      padding: 1px 6px;
+      border: 2px solid $color-main;
+      border-radius: 30px;
+      margin-left: 200px;
+    }
+  }
 }
