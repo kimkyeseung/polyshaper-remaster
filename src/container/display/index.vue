@@ -141,6 +141,8 @@ export default class Display extends Vue {
     const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
     const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
     const p = [ offsetX, offsetY ];
+
+    const context = this.guideCanvas.getContext('2d');
     PolyStore.faces.forEach(face => {
       let a = [ face.vertices[0].x, face.vertices[0].y ];
       let b = [ face.vertices[1].x, face.vertices[1].y ];
@@ -156,8 +158,13 @@ export default class Display extends Vue {
       let invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
       let u = (dot11 * dot02 - dot01 * dot12) * invDenom;
       let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-      if ((u >= 0) && (v >= 0) && (u + v < 1)) {
-        console.log(face.faceId);
+      if ((u >= 0) && (v >= 0) && (u + v < 1)) { // 삼각형의 테두리 반짝이는 애니메이션(리퀘스트 말고 그냥)
+        console.log('in');
+        Vue.prototype.$selectFaceAnimation({ context, width: this.guideCanvas.width, height: this.guideCanvas.height }, face);
+        return;
+      } else {
+        console.log('out');
+        Vue.prototype.$guideLine({ context, width: this.guideCanvas.width, height: this.guideCanvas.height }, { x: offsetX, y: offsetY });
       }
     });
   }

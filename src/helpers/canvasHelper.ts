@@ -4,15 +4,21 @@ const canvasHelper = {
   install(vue) {
     vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, animated: boolean) => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
-      if (animated) {
-        vue.animatedVertexStack.push({ x, y });
-        vue.blinkAnimation(canvas);
-      } else {
-        context.beginPath();
-        context.arc(x, y, 3, 0, Math.PI * 2);
-        context.fillStyle = 'red';
-        context.fill(); 
-      }
+      // if (animated) {
+      //   vue.animatedVertexStack.push({ x, y });
+      //   vue.blinkAnimation(canvas);
+      // } else {
+      //   context.beginPath();
+      //   context.arc(x, y, 3, 0, Math.PI * 2);
+      //   context.fillStyle = 'red';
+      //   context.fill(); 
+      // }
+
+      vue.animatedVertexStack.push({ x, y });
+      context.beginPath();
+      context.arc(x, y, 3, 0, Math.PI * 2);
+      context.fillStyle = 'red';
+      context.fill();
     };
 
     vue.prototype.$makeFaceOnCanvas = ({ color, vertices }: Face, canvas: HTMLCanvasElement) => {
@@ -27,9 +33,10 @@ const canvasHelper = {
         context.fillStyle = color;
         context.fill();
       });
-      setTimeout(() => {
-        vue.animatedVertexStack.length = 0;
-      }, 1000);
+      // setTimeout(() => {
+      //   vue.animatedVertexStack.length = 0;
+      // }, 1000);
+      vue.animatedVertexStack.length = 0;
     };
 
     vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
@@ -74,54 +81,70 @@ const canvasHelper = {
       return rgb;
     };
 
-    // vue.blinkVertex = ({ x, y }: MousePosition, canvas: HTMLCanvasElement) => {
-    //   const context: CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
+    vue.animatedVertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될 
+
+    // vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
+    //   const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
     //   function blink(timestamp) {
-    //     let start = timestamp % 1000;
-    //     // console.log(timestamp);
-    //     context.beginPath();
-    //     context.clearRect(0, 0, 300, 300);
-    //     context.arc(x, y, start / 100, 0, Math.PI * 2);
-    //     context.fillStyle = `rgba(0, 0, 0, ${100 / start})`;
-    //     context.fill();
+    //     let start: number = timestamp % 1000;
+    //     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //     vue.animatedVertexStack.forEach((animatedVertex: MousePosition) => {
+
+    //       context.beginPath();
+    //       context.arc(animatedVertex.x, animatedVertex.y, start / 100, 0, Math.PI * 2);
+    //       context.fillStyle = `rgba(0, 0, 0, ${100 / start})`;
+    //       context.fill();
+    //       context.closePath();
+    //     });
+
     //     const id = window.requestAnimationFrame(blink);
-    //     // if (timestamp > 10000) {
-    //     //   console.log('timeover') ;
-    //     //   window.cancelAnimationFrame(id);
-    //     // }
+    //     if (!vue.animatedVertexStack.length) {
+    //       console.log('done') ;
+    //       window.cancelAnimationFrame(id);
+    //     }
     //   }
 
     //   window.requestAnimationFrame(blink);
     // };
 
-    vue.animatedVertexStack = [];
-
-    vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
-      const context: CanvasRenderingContext2D = canvas.getContext('2d');
-
-      function blink(timestamp) {
-        let start: number = timestamp % 1000;
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        vue.animatedVertexStack.forEach((animatedVertex: MousePosition) => {
-
-          context.beginPath();
-          context.arc(animatedVertex.x, animatedVertex.y, start / 100, 0, Math.PI * 2);
-          context.fillStyle = `rgba(0, 0, 0, ${100 / start})`;
-          context.fill();
-          context.closePath();
+    vue.prototype.$selectFaceAnimation = ({context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { vertices }: Face) => {
+      context.clearRect(0, 0, width, height);
+      context.beginPath();
+      vertices.forEach((vertex) => {
+        context.beginPath();
+        context.moveTo(vertex.x, vertex.y);
+        vertex.next.forEach((next) => {
+          context.lineTo(next.x, next.y);
         });
+        context.closePath();
 
-        const id = window.requestAnimationFrame(blink);
-        if (!vue.animatedVertexStack.length) {
-          console.log('done') ;
-          window.cancelAnimationFrame(id);
-        }
+        context.lineWidth = 2;
+        context.strokeStyle = `rgb(255, 127, 0)`;
+        context.stroke();
+      });
+    };
+
+    vue.prototype.$guideLine = ({context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { x, y }) => {
+      console.log('guide');
+      context.clearRect(0, 0, width, height);
+      if (vue.animatedVertexStack.length === 0) {
+        return;
       }
-
-      window.requestAnimationFrame(blink);
-    }
+      context.beginPath();
+      console.log(vue.animatedVertexStack);
+      context.moveTo(vue.animatedVertexStack[0].x, vue.animatedVertexStack[0].y)
+      vue.animatedVertexStack.forEach(({ x, y }) => {
+        console.log(x, y);
+        context.lineTo(x, y);
+      });
+      context.lineTo(x, y);
+      context.closePath();
+      context.lineWidth = 2;
+      context.strokeStyle = 'green';//`rgb(255, 127, 0)`;
+      context.stroke();
+    };
   },
 };
 
