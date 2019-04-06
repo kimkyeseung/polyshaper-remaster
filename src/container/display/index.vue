@@ -3,7 +3,7 @@
     <div
       class="display__contents"
       ref="canvasWrap"
-      @mousemove="positionChecker"
+      @mousemove="handleMouseMove"
       @click="handleClick">
       <canvas
         name="guide"
@@ -65,6 +65,10 @@ export default class Display extends Vue {
     return UiStore.isAnimated;
   }
 
+  get vertextSnapGap(): number {
+    return UiStore.vertexSnapGap;
+  }
+
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
     this.getImageData(img);
     this.setImageDataToStore(img);
@@ -97,6 +101,10 @@ export default class Display extends Vue {
 
   handleClick(ev: MouseEvent) {
     this.makeVertex(ev, this.guideCanvas);
+  }
+
+  handleMouseMove(ev: MouseEvent) {
+    this.positionChecker(ev);
   }
 
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
@@ -142,25 +150,33 @@ export default class Display extends Vue {
     const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
     const p = [ offsetX, offsetY ];
     const context = this.guideCanvas.getContext('2d');
-    Vue.prototype.$guideLine({ context, width: this.guideCanvas.width, height: this.guideCanvas.height }, { x: offsetX, y: offsetY });
+    Vue.prototype.$guideLine({
+      context,
+      width: this.guideCanvas.width,
+      height: this.guideCanvas.height
+    }, { x: offsetX, y: offsetY });
 
     PolyStore.faces.every(face => {
-      let a = [ face.vertices[0].x, face.vertices[0].y ];
-      let b = [ face.vertices[1].x, face.vertices[1].y ];
-      let c = [ face.vertices[2].x, face.vertices[2].y ];
-      let v0 = vector(a, c);
-      let v1 = vector(a, b);
-      let v2 = vector(a, p);
-      let dot00 = dot(v0, v0);
-      let dot01 = dot(v0, v1);
-      let dot02 = dot(v0, v2);
-      let dot11 = dot(v1, v1);
-      let dot12 = dot(v1, v2);
-      let invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
-      let u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-      let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+      const a = [ face.vertices[0].x, face.vertices[0].y ];
+      const b = [ face.vertices[1].x, face.vertices[1].y ];
+      const c = [ face.vertices[2].x, face.vertices[2].y ];
+      const v0 = vector(a, c);
+      const v1 = vector(a, b);
+      const v2 = vector(a, p);
+      const dot00 = dot(v0, v0);
+      const dot01 = dot(v0, v1);
+      const dot02 = dot(v0, v2);
+      const dot11 = dot(v1, v1);
+      const dot12 = dot(v1, v2);
+      const invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+      const u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+      const v = (dot00 * dot12 - dot01 * dot02) * invDenom;
       if ((u >= 0) && (v >= 0) && (u + v < 1)) {
-        Vue.prototype.$selectFaceAnimation({ context, width: this.guideCanvas.width, height: this.guideCanvas.height }, face);
+        Vue.prototype.$selectFaceAnimation({
+          context,
+          width: this.guideCanvas.width,
+          height: this.guideCanvas.height
+        }, face);
         return false;
       }
       return true;

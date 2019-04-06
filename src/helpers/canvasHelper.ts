@@ -11,7 +11,7 @@ const canvasHelper = {
       //   context.beginPath();
       //   context.arc(x, y, 3, 0, Math.PI * 2);
       //   context.fillStyle = 'red';
-      //   context.fill(); 
+      //   context.fill();
       // }
 
       vue.animatedVertexStack.push({ x, y });
@@ -44,7 +44,7 @@ const canvasHelper = {
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
 
-    vue.prototype.$getColorAverage = (vertices: Face["vertices"], canvas: HTMLCanvasElement, imageData: string): ColorData => {
+    vue.prototype.$getColorAverage = (vertices: Face['vertices'], canvas: HTMLCanvasElement, imageData: string): ColorData => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       const [{ x: x1, y: y1 }, { x: x2, y: y2 }, { x: x3, y: y3 }] = vertices;
       context.save();
@@ -81,7 +81,7 @@ const canvasHelper = {
       return rgb;
     };
 
-    vue.animatedVertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될 
+    vue.animatedVertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될
 
     // vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
     //   const context: CanvasRenderingContext2D = canvas.getContext('2d');
@@ -109,7 +109,7 @@ const canvasHelper = {
     //   window.requestAnimationFrame(blink);
     // };
 
-    vue.prototype.$selectFaceAnimation = ({context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { vertices }: Face) => {
+    vue.prototype.$selectFaceAnimation = ({ context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { vertices }: Face) => {
       context.clearRect(0, 0, width, height);
       context.beginPath();
       vertices.forEach((vertex) => {
@@ -121,12 +121,12 @@ const canvasHelper = {
         context.closePath();
 
         context.lineWidth = 2;
-        context.strokeStyle = `rgb(255, 127, 0)`;
+        context.strokeStyle = 'rgb(255, 127, 0)';
         context.stroke();
       });
     };
 
-    vue.prototype.$guideLine = ({context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { x, y }) => {
+    vue.prototype.$guideLine = ({ context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { x, y }) => {
       console.log('guide');
       context.clearRect(0, 0, width, height);
       if (vue.animatedVertexStack.length === 0) {
@@ -134,7 +134,7 @@ const canvasHelper = {
       }
       context.beginPath();
       console.log(vue.animatedVertexStack);
-      context.moveTo(vue.animatedVertexStack[0].x, vue.animatedVertexStack[0].y)
+      context.moveTo(vue.animatedVertexStack[0].x, vue.animatedVertexStack[0].y);
       vue.animatedVertexStack.forEach(({ x, y }) => {
         console.log(x, y);
         context.lineTo(x, y);
@@ -142,7 +142,7 @@ const canvasHelper = {
       context.lineTo(x, y);
       context.closePath();
       context.lineWidth = 2;
-      context.strokeStyle = 'green';//`rgb(255, 127, 0)`;
+      context.strokeStyle = 'green';// `rgb(255, 127, 0)`;
       context.stroke();
     };
   },

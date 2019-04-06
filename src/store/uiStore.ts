@@ -1,4 +1,6 @@
-import { VuexModule, Module, getModule, Mutation, Action } from 'vuex-module-decorators';
+import {
+  VuexModule, Module, getModule, Mutation, Action,
+} from 'vuex-module-decorators';
 import store from '@/store';
 import { TitleModel } from '@/models/interfaces';
 
@@ -11,9 +13,16 @@ class UiStore extends VuexModule {
 
   public isAnimated: boolean = true; // make true temporarly, default is false;
 
+  public vertexSnapGap: number = 10;
+
   @Mutation
   toggleAnimated(value: boolean | null) {
     this.isAnimated = !!value;
+  }
+
+  @Mutation
+  updateVertexSnapGap(gap: number) {
+    this.vertexSnapGap = gap;
   }
 
   @Action
@@ -24,6 +33,11 @@ class UiStore extends VuexModule {
   @Action
   turnOffAnimate() {
     this.context.commit('toggleAnimated');
+  }
+
+  @Action
+  setVertexSnapGap(gap: number) {
+    this.context.commit('updateVertexSnapGap', gap);
   }
 }
 
