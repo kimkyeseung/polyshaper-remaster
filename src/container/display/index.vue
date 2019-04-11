@@ -113,7 +113,7 @@ export default class Display extends Vue {
 
     Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
     const newVertex: Vertex = {
-      vertexId: PolyStore.vertices.length + this.vertices.length,
+      vertexId: PolyStore.vertices.getSize() + this.vertices.length,
       x,
       y,
       next: [],
