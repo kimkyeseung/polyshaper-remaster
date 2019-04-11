@@ -2,6 +2,7 @@ import {
   VuexModule, Module, Mutation, Action, getModule,
 } from 'vuex-module-decorators';
 import store from '@/store';
+import router from '@/router';
 
 @Module({ dynamic: true, name: 'imageStore', store })
 class ImageStore extends VuexModule {
@@ -10,6 +11,8 @@ class ImageStore extends VuexModule {
   @Mutation
   updateImage(image: string) {
     this.image = image;
+    const imageAddress = image.split('/').pop();
+    router.push(`/poly-edit/${imageAddress}`);
   }
 
   @Mutation
@@ -28,6 +31,7 @@ class ImageStore extends VuexModule {
   @Mutation
   deleteImage() {
     this.image = null;
+    router.push('/');
   }
 
   @Action

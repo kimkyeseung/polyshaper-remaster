@@ -41,13 +41,7 @@ export default class Upload extends Vue {
     storedImageModal: Modal;
   }
 
-  @Watch('uploadedImage')
-  onImageUploaded(image: string) {
-    const imageAddress = image.split('/').pop();
-    this.$router.push(`/poly-edit/${imageAddress}`);
-  }
-
-  get uploadedImage() {
+  get uploadedImage(): string {
     return ImageStore.image;
   }
 
