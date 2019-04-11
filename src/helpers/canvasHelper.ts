@@ -33,9 +33,6 @@ const canvasHelper = {
         context.fillStyle = color;
         context.fill();
       });
-      // setTimeout(() => {
-      //   vue.animatedVertexStack.length = 0;
-      // }, 1000);
       vue.animatedVertexStack.length = 0;
     };
 
@@ -81,6 +78,23 @@ const canvasHelper = {
       return rgb;
     };
 
+    vue.prototype.$getComplementaryColor = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, imageData: string): ColorData => {
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      const { data } = context.getImageData(x, y, 1, 1);
+
+      const img = document.createElement('img');
+      img.src = imageData;
+      context.drawImage(img, x - 5, y - 5, 10, 10, x - 5, y - 5, 10, 10); // for stability draw 10px rect not (img, x, y, 1, 1, x, y, 1, 1)
+
+      let count = 0;
+      const rgb: ColorData = {
+        r: 255 - data[0],
+        g: 255 - data[1],
+        b: 255 - data[2],
+      };
+      return rgb;
+    };
+
     vue.animatedVertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될
 
     // vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
@@ -109,7 +123,7 @@ const canvasHelper = {
     //   window.requestAnimationFrame(blink);
     // };
 
-    vue.prototype.$selectFaceAnimation = ({ context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { vertices }: Face) => {
+    vue.prototype.$selectFaceAnimation = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { vertices }: Face) => {
       context.clearRect(0, 0, width, height);
       context.beginPath();
       vertices.forEach((vertex) => {
@@ -126,7 +140,7 @@ const canvasHelper = {
       });
     };
 
-    vue.prototype.$guideLine = ({ context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { x, y }) => {
+    vue.prototype.$guideLine = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { x, y }, color?: string) => {
       context.clearRect(0, 0, width, height);
       if (vue.animatedVertexStack.length === 0) {
         return;
@@ -139,7 +153,7 @@ const canvasHelper = {
       context.lineTo(x, y);
       context.closePath();
       context.lineWidth = 2;
-      context.strokeStyle = 'green';// `rgb(255, 127, 0)`;
+      context.strokeStyle = color || `rgb(255, 127, 0)`;
       context.stroke();
     };
   },

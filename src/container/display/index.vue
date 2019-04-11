@@ -156,11 +156,16 @@ export default class Display extends Vue {
     const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
     const p = [ offsetX, offsetY ];
     const context = this.guideCanvas.getContext('2d');
-    Vue.prototype.$guideLine({
-      context,
-      width: this.guideCanvas.width,
-      height: this.guideCanvas.height
-    }, this.mousePositionScaleFix({ x: offsetX, y: offsetY }));
+    const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, this.imageCopy, ImageStore.image);
+    Vue.prototype.$guideLine(
+      {
+        context,
+        width: this.guideCanvas.width,
+        height: this.guideCanvas.height
+      },
+      this.mousePositionScaleFix({ x: offsetX, y: offsetY }),
+      Vue.prototype.$stringifyColorData(guideColor)
+    );
 
     PolyStore.faces.every(face => {
       const a = [ face.vertices[0].x, face.vertices[0].y ];
