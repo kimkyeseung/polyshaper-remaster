@@ -107,9 +107,15 @@ export default class Display extends Vue {
     this.positionChecker(ev);
   }
 
+  mousePositionScaleFix({ x, y }: MousePosition): MousePosition {
+    return {
+      x: x * this.scaleFixRatio.x,
+      y: y * this.scaleFixRatio.y,
+    };
+  }
+
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
-    const x = offsetX * this.scaleFixRatio.x;
-    const y = offsetY * this.scaleFixRatio.y;
+    const { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
 
     Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
     const newVertex: Vertex = {
@@ -154,7 +160,7 @@ export default class Display extends Vue {
       context,
       width: this.guideCanvas.width,
       height: this.guideCanvas.height
-    }, { x: offsetX, y: offsetY });
+    }, this.mousePositionScaleFix({ x: offsetX, y: offsetY }));
 
     PolyStore.faces.every(face => {
       const a = [ face.vertices[0].x, face.vertices[0].y ];

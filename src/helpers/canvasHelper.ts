@@ -127,16 +127,13 @@ const canvasHelper = {
     };
 
     vue.prototype.$guideLine = ({ context, width, height }: {context: CanvasRenderingContext2D, width: number, height: number}, { x, y }) => {
-      console.log('guide');
       context.clearRect(0, 0, width, height);
       if (vue.animatedVertexStack.length === 0) {
         return;
       }
       context.beginPath();
-      console.log(vue.animatedVertexStack);
       context.moveTo(vue.animatedVertexStack[0].x, vue.animatedVertexStack[0].y);
       vue.animatedVertexStack.forEach(({ x, y }) => {
-        console.log(x, y);
         context.lineTo(x, y);
       });
       context.lineTo(x, y);
