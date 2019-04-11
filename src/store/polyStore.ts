@@ -3,11 +3,11 @@ import {
 } from 'vuex-module-decorators';
 import store from '@/store';
 import { Vertex, Face } from '@/models/interfaces';
-import verticesTable, { CoordinateTable } from '@/helpers/coordinateTable';
+import { CoordinateTable } from '@/helpers/coordinateTable';
 
 @Module({ dynamic: true, name: 'polyStore', store })
 class PolyStore extends VuexModule {
-  public vertices: CoordinateTable = verticesTable;
+  public vertices: CoordinateTable = new CoordinateTable();
 
   public faces: Face[] = [];
 
@@ -21,14 +21,25 @@ class PolyStore extends VuexModule {
     this.faces.push(face);
   }
 
+  @Mutation
+  initializeState() {
+    this.vertices = new CoordinateTable();
+    this.faces = [];
+  }
+
   @Action
   addVertex(vertex: Vertex) {
     this.context.commit('pushVertex', vertex);
   }
-
+  
   @Action
   addFace(face: Face) {
     this.context.commit('pushFace', face);
+  }
+
+  @Action
+  initialize() {
+    this.context.commit('initializeState');
   }
 }
 
