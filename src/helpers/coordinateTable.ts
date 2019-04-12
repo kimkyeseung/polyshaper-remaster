@@ -1,4 +1,5 @@
 import { Vertex, Face, MousePosition } from '@/models/interfaces';
+import UiStore from '@/store/uiStore';
 
 interface Keys {
   xKey: number;
@@ -12,7 +13,7 @@ function distinguisher({ x, y }: Vertex): Keys {
   };
 }
 
-export class CoordinateTable {
+export default class CoordinateTable {
   verticesTable: Vertex[][][];
 
   constructor() {
@@ -24,11 +25,13 @@ export class CoordinateTable {
   get({ x, y }: MousePosition): Vertex {
     const { xKey, yKey }: Keys = distinguisher({ x, y } as Vertex);
     let target;
-    this.verticesTable[xKey][yKey].forEach((vertex: Vertex) => {
-      if (x === vertex.x && y === vertex.y) {
-        target = vertex;
-      }
-    });
+    if (this.verticesTable[xKey] && this.verticesTable[xKey][yKey]) {
+      this.verticesTable[xKey][yKey].forEach((vertex: Vertex) => {
+        if (x === vertex.x && y === vertex.y) {
+          target = vertex;
+        }
+      });
+    }
     return target;
   }
 
@@ -43,6 +46,18 @@ export class CoordinateTable {
   getSize(): number {
     return CoordinateTable.size;
   }
-}
 
-export default new CoordinateTable();
+  getSnapPoint({ x, y }): Vertex {
+    const { xKey, yKey }: Keys = distinguisher({ x, y } as Vertex);
+    let target;
+    const snap = UiStore.vertexSnapGap;
+    if (this.verticesTable[xKey] && this.verticesTable[xKey][yKey]) {
+      this.verticesTable[xKey][yKey].forEach((vertex: Vertex) => {
+        if ((Math.abs(vertex.x - x) < snap) && (Math.abs(vertex.y - y) < snap)) {
+          target = vertex;
+        }
+      });
+    }
+    return target;
+  }
+}

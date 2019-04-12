@@ -3,11 +3,13 @@ import {
 } from 'vuex-module-decorators';
 import store from '@/store';
 import { Vertex, Face } from '@/models/interfaces';
-import { CoordinateTable } from '@/helpers/coordinateTable';
+import CoordinateTable from '@/helpers/coordinateTable';
 
 @Module({ dynamic: true, name: 'polyStore', store })
 class PolyStore extends VuexModule {
   public vertices: CoordinateTable = new CoordinateTable();
+
+  public snapVertex: Vertex;
 
   public faces: Face[] = [];
 

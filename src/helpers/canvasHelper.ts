@@ -1,11 +1,11 @@
-import { MousePosition, Face, ColorData } from '@/models/interfaces';
+import { MousePosition, Face, ColorData, Vertex } from '@/models/interfaces';
 
 const canvasHelper = {
   install(vue) {
     vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, animated: boolean) => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       // if (animated) {
-      //   vue.animatedVertexStack.push({ x, y });
+      //   vue.vertexStack.push({ x, y });
       //   vue.blinkAnimation(canvas);
       // } else {
       //   context.beginPath();
@@ -14,11 +14,7 @@ const canvasHelper = {
       //   context.fill();
       // }
 
-      vue.animatedVertexStack.push({ x, y });
-      context.beginPath();
-      context.arc(x, y, 3, 0, Math.PI * 2);
-      context.fillStyle = 'red';
-      context.fill();
+      vue.vertexStack.push({ x, y });
     };
 
     vue.prototype.$makeFaceOnCanvas = ({ color, vertices }: Face, canvas: HTMLCanvasElement) => {
@@ -33,7 +29,7 @@ const canvasHelper = {
         context.fillStyle = color;
         context.fill();
       });
-      vue.animatedVertexStack.length = 0;
+      vue.vertexStack.length = 0;
     };
 
     vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
@@ -95,7 +91,7 @@ const canvasHelper = {
       return rgb;
     };
 
-    vue.animatedVertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될
+    vue.vertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될
 
     // vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
     //   const context: CanvasRenderingContext2D = canvas.getContext('2d');
@@ -104,7 +100,7 @@ const canvasHelper = {
     //     let start: number = timestamp % 1000;
     //     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    //     vue.animatedVertexStack.forEach((animatedVertex: MousePosition) => {
+    //     vue.vertexStack.forEach((animatedVertex: MousePosition) => {
 
     //       context.beginPath();
     //       context.arc(animatedVertex.x, animatedVertex.y, start / 100, 0, Math.PI * 2);
@@ -114,7 +110,7 @@ const canvasHelper = {
     //     });
 
     //     const id = window.requestAnimationFrame(blink);
-    //     if (!vue.animatedVertexStack.length) {
+    //     if (!vue.vertexStack.length) {
     //       console.log('done') ;
     //       window.cancelAnimationFrame(id);
     //     }
@@ -142,12 +138,15 @@ const canvasHelper = {
 
     vue.prototype.$guideLine = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { x, y }, color?: string) => {
       context.clearRect(0, 0, width, height);
-      if (vue.animatedVertexStack.length === 0) {
+      if (vue.vertexStack.length === 0) {
         return;
       }
       context.beginPath();
-      context.moveTo(vue.animatedVertexStack[0].x, vue.animatedVertexStack[0].y);
-      vue.animatedVertexStack.forEach(({ x, y }) => {
+      context.moveTo(vue.vertexStack[0].x, vue.vertexStack[0].y);
+      vue.vertexStack.forEach(({ x, y }) => {
+        context.arc(x, y, 3, 0, Math.PI * 2);
+        context.fillStyle = color || 'red';
+        context.fill();
         context.lineTo(x, y);
       });
       context.lineTo(x, y);
@@ -156,6 +155,33 @@ const canvasHelper = {
       context.strokeStyle = color || `rgb(255, 127, 0)`;
       context.stroke();
     };
+
+    vue.snapGuide;
+
+    vue.prototype.$drawSnapGuide = ({ x, y }: Vertex, { context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }) => {
+      // function snapMotion(time) {
+      //   context.clearRect(0, 0, width, height);
+      //   let start: number = time % 1000;
+      //   context.beginPath();
+      //   context.arc(x, y, start / 100, 0, Math.PI * 2);
+      //   context.fillStyle = `rgba(0, 0, 0, ${100 / start})`;
+      //   context.fill();
+      //   context.closePath();
+      //   vue.snapGuide = window.requestAnimationFrame(snapMotion);
+      // }
+      // window.requestAnimationFrame(snapMotion);
+      context.clearRect(0, 0, width, height);
+      context.beginPath();
+      context.arc(x, y, 4, 0, Math.PI * 2);
+      context.fillStyle = 'orange';
+      context.fill();
+      context.closePath();
+    }
+
+    vue.prototype.$cancelSnapGuide = (context: CanvasRenderingContext2D, width: number, height: number) => {
+      context.clearRect(0, 0, width, height);
+      window.cancelAnimationFrame(vue.snapGuide);
+    }
   },
 };
 

@@ -6,6 +6,10 @@
       @mousemove="handleMouseMove"
       @click="handleClick">
       <canvas
+        name="snap"
+        :width="canvasWidth"
+        :height="canvasHeight"/>
+      <canvas
         name="guide"
         :width="canvasWidth"
         :height="canvasHeight"/>
@@ -47,6 +51,7 @@ export default class Display extends Vue {
 
   private guideCanvas: HTMLCanvasElement;
   private polyCanvas: HTMLCanvasElement;
+  private snapCanvas: HTMLCanvasElement;
   private imageCopy: HTMLCanvasElement;
 
   public $refs!: {
@@ -95,7 +100,7 @@ export default class Display extends Vue {
   }
 
   imageCopyToCanvas() {
-    const context = this.imageCopy.getContext('2d');
+    const context: CanvasRenderingContext2D = this.imageCopy.getContext('2d');
     context.drawImage(this.$refs.image, 0, 0);
   }
 
@@ -104,6 +109,7 @@ export default class Display extends Vue {
   }
 
   handleMouseMove(ev: MouseEvent) {
+    this.snapToPoint(ev);
     this.positionChecker(ev);
   }
 
@@ -118,10 +124,12 @@ export default class Display extends Vue {
     const { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
 
     Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
+    /* const { x: snappedX, y: snappedY } =  */PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    // console.log(snappedX, snappedY);
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.getSize() + this.vertices.length,
-      x,
-      y,
+      x: /* snappedX || */ x,
+      y: /* snappedY || */ y,
       next: [],
     };
     this.vertices.push(newVertex);
@@ -155,10 +163,9 @@ export default class Display extends Vue {
     const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
     const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
     const p = [ offsetX, offsetY ];
-    const context = this.guideCanvas.getContext('2d');
+    const context: CanvasRenderingContext2D = this.guideCanvas.getContext('2d');
     const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, this.imageCopy, ImageStore.image);
-    Vue.prototype.$guideLine(
-      {
+    Vue.prototype.$guideLine({
         context,
         width: this.guideCanvas.width,
         height: this.guideCanvas.height
@@ -194,10 +201,25 @@ export default class Display extends Vue {
     });
   }
 
+  snapToPoint({ offsetX, offsetY }) {
+    const snap: Vertex = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    const context: CanvasRenderingContext2D = this.snapCanvas.getContext('2d');
+    if (snap) {
+      Vue.prototype.$drawSnapGuide(snap, {
+        context,
+        width: this.snapCanvas.width,
+        height: this.snapCanvas.height
+      });
+    } else {
+      Vue.prototype.$cancelSnapGuide(context, this.snapCanvas.width, this.snapCanvas.height);
+    }
+  }
+
   mounted() {
     window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
     this.guideCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide');
     this.polyCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly');
+    this.snapCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap');
     this.imageCopy = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy');
   }
 }
