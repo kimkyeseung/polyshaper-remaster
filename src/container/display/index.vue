@@ -121,15 +121,19 @@ export default class Display extends Vue {
   }
 
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
-    const { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
+    let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
 
     Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
-    /* const { x: snappedX, y: snappedY } =  */PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    const snap = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    if (snap) {
+      x = snap.x;
+      y = snap.y;
+    }
     // console.log(snappedX, snappedY);
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.getSize() + this.vertices.length,
-      x: /* snappedX || */ x,
-      y: /* snappedY || */ y,
+      x,
+      y,
       next: [],
     };
     this.vertices.push(newVertex);
@@ -165,12 +169,20 @@ export default class Display extends Vue {
     const p = [ offsetX, offsetY ];
     const context: CanvasRenderingContext2D = this.guideCanvas.getContext('2d');
     const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, this.imageCopy, ImageStore.image);
+
+    let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY });
+    const snap: Vertex = PolyStore.vertices.getSnapPoint({ x, y });
+    if (snap) {
+      x = snap.x;
+      y = snap.y;
+    }
+
     Vue.prototype.$guideLine({
         context,
         width: this.guideCanvas.width,
         height: this.guideCanvas.height
       },
-      this.mousePositionScaleFix({ x: offsetX, y: offsetY }),
+      { x, y },
       Vue.prototype.$stringifyColorData(guideColor)
     );
 
