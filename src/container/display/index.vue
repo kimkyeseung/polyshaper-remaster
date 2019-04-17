@@ -123,12 +123,13 @@ export default class Display extends Vue {
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
     let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
 
-    Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
     const snap = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
     if (snap) {
       x = snap.x;
       y = snap.y;
     }
+
+    Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
     // console.log(snappedX, snappedY);
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.getSize() + this.vertices.length,
