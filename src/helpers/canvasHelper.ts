@@ -121,6 +121,7 @@ const canvasHelper = {
 
     vue.prototype.$selectFaceAnimation = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { vertices }: Face) => {
       context.clearRect(0, 0, width, height);
+      context.save();
       context.beginPath();
       vertices.forEach((vertex) => {
         context.beginPath();
@@ -132,8 +133,14 @@ const canvasHelper = {
 
         context.lineWidth = 2;
         context.strokeStyle = 'rgb(255, 127, 0)';
+
+        context.shadowColor = 'rgba(0, 0, 0, .8)';
+        context.shadowBlur = 8;
+        context.shadowOffsetX = 3;
+        context.shadowOffsetY = 3;
         context.stroke();
       });
+      context.restore();
     };
 
     vue.prototype.$guideLine = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { x, y }, color?: string) => {
