@@ -19,10 +19,10 @@ const canvasHelper = {
 
     vue.prototype.$makeFaceOnCanvas = ({ color, vertices }: Face, canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
-      vertices.forEach((vertex) => {
+      vertices.forEach((vertex: Vertex) => {
         context.beginPath();
         context.moveTo(vertex.x, vertex.y);
-        vertex.next.forEach((next) => {
+        vertex.next.forEach((next: Vertex) => {
           context.lineTo(next.x, next.y);
         });
         context.closePath();
@@ -56,7 +56,7 @@ const canvasHelper = {
       const biggestY = Math.max(y1, y2, y3);
       const smallestX = Math.min(x1, x2, x3);
       const smallestY = Math.min(y1, y2, y3);
-      const { data } = context.getImageData(smallestX, smallestY, Math.ceil(biggestX - smallestX) || 1, Math.ceil(biggestY - smallestY) || 1);
+      const { data }: { data: Uint8ClampedArray } = context.getImageData(smallestX, smallestY, Math.ceil(biggestX - smallestX) || 1, Math.ceil(biggestY - smallestY) || 1);
       let count = 0;
       const rgb: ColorData = { r: 0, g: 0, b: 0 };
       for (let i = -4; i < data.length; i += 20) {
@@ -76,7 +76,7 @@ const canvasHelper = {
 
     vue.prototype.$getComplementaryColor = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, imageData: string): ColorData => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
-      const { data } = context.getImageData(x, y, 1, 1);
+      const { data }: { data: Uint8ClampedArray } = context.getImageData(x, y, 1, 1);
 
       const img = document.createElement('img');
       img.src = imageData;
@@ -123,10 +123,10 @@ const canvasHelper = {
       context.clearRect(0, 0, width, height);
       context.save();
       context.beginPath();
-      vertices.forEach((vertex) => {
+      vertices.forEach((vertex: Vertex) => {
         context.beginPath();
         context.moveTo(vertex.x, vertex.y);
-        vertex.next.forEach((next) => {
+        vertex.next.forEach((next: Vertex) => {
           context.lineTo(next.x, next.y);
         });
         context.closePath();
@@ -134,7 +134,7 @@ const canvasHelper = {
         context.lineWidth = 2;
         context.strokeStyle = 'rgb(255, 127, 0)';
 
-        context.shadowColor = 'rgba(0, 0, 0, .8)';
+        context.shadowColor = 'rgba(0, 0, 0, .4)';
         context.shadowBlur = 8;
         context.shadowOffsetX = 3;
         context.shadowOffsetY = 3;
