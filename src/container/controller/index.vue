@@ -4,7 +4,7 @@
 
     <section v-if="selectedFace">
       <form>
-        <input type="color" name="" id="" v-model="selectedFace.color">
+        <input type="color" name="" id="" :value="$hexColorFormatter(selectedFace.color)" @change="handleColorChange">
         <p>{{selectedFace.color}}</p>
       </form>
       <b-button>Deselect</b-button>
@@ -24,10 +24,21 @@ import { Face } from '@/models/interfaces';
 
 @Component({ components: { AppTitle } })
 export default class Controller extends Vue {
-  public color = 'rgb(255, 0, 0)';
+  public color = Vue.prototype.$hexColorFormatter('rgb(255, 255, 255)');
 
-  get selectedFace() {
+  get selectedFace(): Face {
     return PolyStore.selectedFace;
+  }
+
+  set selectedFace(color) {
+    PolyStore.changeFaceColor(color);
+  }
+
+  handleColorChange({target}: {target: HTMLInputElement}) {
+    const color = Vue.prototype.$rgbColorFormatter(target.value);
+    PolyStore.changeFaceColor(color);
+    // Vue.prototype.$makeFaceOnCanvas(this.selectedFace)
+    // 색상을 변경한다.
   }
 
   handleImageReset() {

@@ -55,6 +55,12 @@ class PolyStore extends VuexModule {
   selectFace(face: Face) {
     this.context.commit('updateSelectedFace', face);
   }
+
+  @Action
+  changeFaceColor(color) {
+    this.selectedFace.color = color;
+    this.context.commit('updateSelectedFace', this.selectedFace);
+  }
 }
 
 export default getModule(PolyStore);

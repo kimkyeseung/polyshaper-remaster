@@ -24,6 +24,13 @@ const utilityHelper = {
       const v = (dot00 * dot12 - dot01 * dot02) * invDenom;
       return u >= 0 && v >= 0 && u + v < 1;
     };
+
+    vue.prototype.$rgbColorFormatter = (color: string) => `rgb(${color.match(/[A-Za-z0-9]{2}/g).map((v: string) => parseInt(v, 16)).join(', ') + ')'}`;
+
+    vue.prototype.$hexColorFormatter = (color: string) => `#${color.substring(4, color.length - 1).split(', ').map((v: string) => {
+      const hex = Number(v).toString(16);
+      return hex.length === 1 ? `0${hex}` : hex;
+    }).join('')}`;
   },
 };
 

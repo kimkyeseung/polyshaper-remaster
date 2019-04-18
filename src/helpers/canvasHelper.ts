@@ -32,6 +32,10 @@ const canvasHelper = {
       vue.vertexStack.length = 0;
     };
 
+    vue.prototype.$faceColorChange = () => {
+
+    };
+
     vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
