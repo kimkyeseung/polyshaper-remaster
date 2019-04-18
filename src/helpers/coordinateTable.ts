@@ -6,6 +6,14 @@ interface Keys {
   yKey: number;
 }
 
+interface VerticesTable {
+  [K: number]: Vertex[];
+}
+
+interface Dictionary<T> {
+  [K: number]: VerticesTable;
+}
+
 function distinguisher({ x, y }: Vertex): Keys {
   return {
     xKey: ~~(x / 100),
@@ -14,10 +22,10 @@ function distinguisher({ x, y }: Vertex): Keys {
 }
 
 export default class CoordinateTable {
-  verticesTable: Vertex[][][];
+  verticesTable: Dictionary<Dictionary<VerticesTable>>;
 
   constructor() {
-    this.verticesTable = [];
+    this.verticesTable = {};
   }
 
   static size: number = 0;
@@ -38,7 +46,7 @@ export default class CoordinateTable {
   set(vertex: Vertex) {
     CoordinateTable.size++;
     const { xKey, yKey }: Keys = distinguisher(vertex);
-    this.verticesTable[xKey] = this.verticesTable[xKey] || [];
+    this.verticesTable[xKey] = this.verticesTable[xKey] || {};
     this.verticesTable[xKey][yKey] = this.verticesTable[xKey][yKey] || [];
     this.verticesTable[xKey][yKey].push(vertex);
   }
