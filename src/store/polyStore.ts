@@ -13,6 +13,8 @@ class PolyStore extends VuexModule {
 
   public faces: Face[] = [];
 
+  public selectedFace: Face | null;
+
   @Mutation
   pushVertex(vertex: Vertex) {
     this.vertices.set(vertex);
@@ -29,6 +31,12 @@ class PolyStore extends VuexModule {
     this.faces = [];
   }
 
+  @Mutation
+  updateSelectedFace(face: Face) {
+    console.log('mutation',face);
+    this.selectedFace = face;
+  }
+
   @Action
   addVertex(vertex: Vertex) {
     this.context.commit('pushVertex', vertex);
@@ -42,6 +50,11 @@ class PolyStore extends VuexModule {
   @Action
   initialize() {
     this.context.commit('initializeState');
+  }
+
+  @Action
+  selectFace(face: Face) {
+    this.context.commit('updateSelectedFace', face);
   }
 }
 

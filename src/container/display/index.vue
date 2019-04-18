@@ -53,6 +53,7 @@ export default class Display extends Vue {
   private polyCanvas: HTMLCanvasElement;
   private snapCanvas: HTMLCanvasElement;
   private imageCopy: HTMLCanvasElement;
+  private pointedFace: Face;
 
   public $refs!: {
     image: HTMLImageElement;
@@ -105,7 +106,10 @@ export default class Display extends Vue {
   }
 
   handleClick(ev: MouseEvent) {
-    this.makeVertex(ev, this.guideCanvas);
+    console.log(this.pointedFace);
+    this.pointedFace
+      ? this.selectFace(this.pointedFace)
+      : this.makeVertex(ev, this.guideCanvas);
   }
 
   handleMouseMove(ev: MouseEvent) {
@@ -130,7 +134,6 @@ export default class Display extends Vue {
     }
 
     Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
-    // console.log(snappedX, snappedY);
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.getSize() + this.vertices.length,
       x,
@@ -164,10 +167,12 @@ export default class Display extends Vue {
     this.vertices.length = 0;
   }
 
+  selectFace(face: Face) {
+    console.log('select', face);
+    PolyStore.selectFace(face);
+  }
+
   positionChecker({ offsetX, offsetY }: MouseEvent) {
-    const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
-    const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
-    const p = [ offsetX, offsetY ];
     const context: CanvasRenderingContext2D = this.guideCanvas.getContext('2d');
     const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, this.imageCopy, ImageStore.image);
 
@@ -188,30 +193,34 @@ export default class Display extends Vue {
     );
 
     PolyStore.faces.every(face => {
-        if (Vue.prototype.$checkInsideTriangle({ x: offsetX, y: offsetY }, face)) {
-          Vue.prototype.$selectFaceAnimation({
-            context,
-            width: this.guideCanvas.width,
-            height: this.guideCanvas.height
-          }, face);
-          return false;
-        }
+      if (Vue.prototype.$checkInsideTriangle({ x: offsetX, y: offsetY }, face)) {
+        this.pointedFace = face;
+        return false;
+      }
+      this.pointedFace = null;
       return true;
     });
+
+    if (this.pointedFace) {
+      Vue.prototype.$selectFaceAnimation({
+        context,
+        width: this.guideCanvas.width,
+        height: this.guideCanvas.height
+      }, this.pointedFace);
+    }
   }
 
   snapToPoint({ offsetX, offsetY }) {
     const snap: Vertex = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
     const context: CanvasRenderingContext2D = this.snapCanvas.getContext('2d');
-    if (snap) {
-      Vue.prototype.$drawSnapGuide(snap, {
+
+    snap
+      ? Vue.prototype.$drawSnapGuide(snap, {
         context,
         width: this.snapCanvas.width,
         height: this.snapCanvas.height
-      });
-    } else {
-      Vue.prototype.$cancelSnapGuide(context, this.snapCanvas.width, this.snapCanvas.height);
-    }
+      })
+      : Vue.prototype.$cancelSnapGuide(context, this.snapCanvas.width, this.snapCanvas.height);
   }
 
   mounted() {

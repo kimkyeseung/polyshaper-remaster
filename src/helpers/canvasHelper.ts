@@ -159,7 +159,7 @@ const canvasHelper = {
       context.lineTo(x, y);
       context.closePath();
       context.lineWidth = 2;
-      context.strokeStyle = color || `rgb(255, 127, 0)`;
+      context.strokeStyle = color || 'rgb(255, 127, 0)';
       context.stroke();
     };
 
@@ -183,12 +183,12 @@ const canvasHelper = {
       context.fillStyle = 'orange';
       context.fill();
       context.closePath();
-    }
+    };
 
     vue.prototype.$cancelSnapGuide = (context: CanvasRenderingContext2D, width: number, height: number) => {
       context.clearRect(0, 0, width, height);
       window.cancelAnimationFrame(vue.snapGuide);
-    }
+    };
   },
 };
 
