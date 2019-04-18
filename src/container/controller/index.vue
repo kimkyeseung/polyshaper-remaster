@@ -9,7 +9,6 @@
       </form>
       <b-button>Deselect</b-button>
     </section>
-    <button @click="handleClick"></button>
     <section>
       <b-button @click="handleImageReset">Image Reset</b-button>
     </section>
@@ -27,23 +26,13 @@ import { Face } from '@/models/interfaces';
 export default class Controller extends Vue {
   public color = 'rgb(255, 0, 0)';
 
-  public selectedFace: Face = null;
-
-  handleClick() {
-    console.log(PolyStore.vertices);
-    console.log(PolyStore.selectedFace);
+  get selectedFace() {
+    return PolyStore.selectedFace;
   }
 
   handleImageReset() {
     ImageStore.uploadImage();
     PolyStore.initialize();
-  }
-
-  updated() {
-    console.log('update');
-    if (PolyStore.selectedFace) {
-      this.selectedFace = PolyStore.selectedFace;
-    }
   }
 }
 </script>

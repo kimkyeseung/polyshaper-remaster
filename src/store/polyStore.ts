@@ -13,7 +13,7 @@ class PolyStore extends VuexModule {
 
   public faces: Face[] = [];
 
-  public selectedFace: Face | null;
+  public selectedFace: Face | null = null;
 
   @Mutation
   pushVertex(vertex: Vertex) {
@@ -33,7 +33,6 @@ class PolyStore extends VuexModule {
 
   @Mutation
   updateSelectedFace(face: Face) {
-    console.log('mutation',face);
     this.selectedFace = face;
   }
 

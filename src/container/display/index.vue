@@ -106,7 +106,6 @@ export default class Display extends Vue {
   }
 
   handleClick(ev: MouseEvent) {
-    console.log(this.pointedFace);
     this.pointedFace
       ? this.selectFace(this.pointedFace)
       : this.makeVertex(ev, this.guideCanvas);
@@ -168,7 +167,6 @@ export default class Display extends Vue {
   }
 
   selectFace(face: Face) {
-    console.log('select', face);
     PolyStore.selectFace(face);
   }
 
