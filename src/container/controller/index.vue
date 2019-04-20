@@ -21,6 +21,7 @@ import ImageStore from '@/store/imageStore';
 import PolyStore from '@/store/polyStore';
 import { AppTitle } from '@/components';
 import { Face } from '@/models/interfaces';
+import canvasStore from '../../store/canvasStore';
 
 @Component({ components: { AppTitle } })
 export default class Controller extends Vue {
@@ -37,8 +38,7 @@ export default class Controller extends Vue {
   handleColorChange({target}: {target: HTMLInputElement}) {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
     PolyStore.changeFaceColor(color);
-    // Vue.prototype.$makeFaceOnCanvas(this.selectedFace, this.polyCanvas);
-    // 색상을 변경한다.
+    Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
   }
 
   handleImageReset() {

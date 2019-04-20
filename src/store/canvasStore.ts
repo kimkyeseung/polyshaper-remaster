@@ -16,7 +16,6 @@ class CanvasStore extends VuexModule {
   @Mutation
   updateCanvasElement({ canvas, canvasName }: {canvas: HTMLCanvasElement, canvasName: string}) {
     this[canvasName] = canvas;
-    console.log(this[canvasName], '123ffffffff', canvasName);
   }
 
   @Action
