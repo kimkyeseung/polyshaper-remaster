@@ -38,9 +38,10 @@ import UiStore from '@/store/uiStore';
 import PolyStore from '@/store/polyStore';
 import { cloneDeep } from 'lodash';
 import { MousePosition, Vertex, Face, ColorData } from '@/models/interfaces';
+import { CanvasMixin } from '@/mixins';
 
 @Component
-export default class Display extends Vue {
+export default class Display extends CanvasMixin {
   private vertices: Vertex[] = [];
   private canvasWidth: number = 0;
   private canvasHeight: number = 0;
@@ -48,11 +49,6 @@ export default class Display extends Vue {
     x: 0,
     y: 0,
   };
-
-  private guideCanvas: HTMLCanvasElement;
-  private polyCanvas: HTMLCanvasElement;
-  private snapCanvas: HTMLCanvasElement;
-  private imageCopy: HTMLCanvasElement;
   private pointedFace: Face;
 
   public $refs!: {

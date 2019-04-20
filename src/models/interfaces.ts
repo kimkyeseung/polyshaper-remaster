@@ -25,6 +25,7 @@ export interface Face {
   faceId: number;
   color: string;
   vertices: [ Vertex, Vertex, Vertex ];
+  selected?: boolean;
 }
 
 export interface ColorData {

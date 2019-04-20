@@ -34,6 +34,10 @@ class PolyStore extends VuexModule {
   @Mutation
   updateSelectedFace(face: Face) {
     this.selectedFace = face;
+    const selectedFace = this.faces.find((face: Face ) => {
+      return face === this.selectedFace;
+    });
+    selectedFace.selected = true;
   }
 
   @Action
