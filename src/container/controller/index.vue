@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Mixins } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import PolyStore from '@/store/polyStore';
 import { AppTitle } from '@/components';
@@ -30,14 +30,14 @@ export default class Controller extends Vue {
     return PolyStore.selectedFace;
   }
 
-  set selectedFace(color) {
+  set selectedFace(color) { // not work yet
     PolyStore.changeFaceColor(color);
   }
 
   handleColorChange({target}: {target: HTMLInputElement}) {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
     PolyStore.changeFaceColor(color);
-    // Vue.prototype.$makeFaceOnCanvas(this.selectedFace)
+    // Vue.prototype.$makeFaceOnCanvas(this.selectedFace, this.polyCanvas);
     // 색상을 변경한다.
   }
 

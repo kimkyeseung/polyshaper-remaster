@@ -32,16 +32,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Vue, Component, Watch, Mixins } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import UiStore from '@/store/uiStore';
 import PolyStore from '@/store/polyStore';
+import CanvasStore from '@/store/canvasStore';
 import { cloneDeep } from 'lodash';
 import { MousePosition, Vertex, Face, ColorData } from '@/models/interfaces';
-import { CanvasMixin } from '@/mixins';
 
 @Component
-export default class Display extends CanvasMixin {
+export default class Display extends Vue {
   private vertices: Vertex[] = [];
   private canvasWidth: number = 0;
   private canvasHeight: number = 0;
@@ -97,14 +97,14 @@ export default class Display extends CanvasMixin {
   }
 
   imageCopyToCanvas() {
-    const context: CanvasRenderingContext2D = this.imageCopy.getContext('2d');
+    const context: CanvasRenderingContext2D = CanvasStore.imageCopy.getContext('2d');
     context.drawImage(this.$refs.image, 0, 0);
   }
 
   handleClick(ev: MouseEvent) {
     this.pointedFace
       ? this.selectFace(this.pointedFace)
-      : this.makeVertex(ev, this.guideCanvas);
+      : this.makeVertex(ev, CanvasStore.guideCanvas);
   }
 
   handleMouseMove(ev: MouseEvent) {
@@ -137,7 +137,7 @@ export default class Display extends CanvasMixin {
     };
     this.vertices.push(newVertex);
     if (this.vertices.length === 3) {
-      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, this.polyCanvas);
+      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, CanvasStore.polyCanvas);
     }
   }
 
@@ -146,7 +146,7 @@ export default class Display extends CanvasMixin {
     vertices[1].next.push(vertices[0], vertices[2]);
     vertices[2].next.push(vertices[0], vertices[1]);
 
-    const color: ColorData = Vue.prototype.$getColorAverage(vertices, this.imageCopy, ImageStore.image);
+    const color: ColorData = Vue.prototype.$getColorAverage(vertices, CanvasStore.imageCopy, ImageStore.image);
 
     const newFace: Face = {
       faceId: PolyStore.faces.length || 0,
@@ -157,7 +157,7 @@ export default class Display extends CanvasMixin {
       PolyStore.addVertex(vertex);
     });
     PolyStore.addFace(newFace);
-    Vue.prototype.$clearCanvas(this.guideCanvas);
+    Vue.prototype.$clearCanvas(CanvasStore.guideCanvas);
     Vue.prototype.$makeFaceOnCanvas(newFace, canvas);
     this.vertices.length = 0;
   }
@@ -167,8 +167,8 @@ export default class Display extends CanvasMixin {
   }
 
   positionChecker({ offsetX, offsetY }: MouseEvent) {
-    const context: CanvasRenderingContext2D = this.guideCanvas.getContext('2d');
-    const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, this.imageCopy, ImageStore.image);
+    const context: CanvasRenderingContext2D = CanvasStore.guideCanvas.getContext('2d');
+    const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, CanvasStore.imageCopy, ImageStore.image);
 
     let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY });
     const snap: Vertex = PolyStore.vertices.getSnapPoint({ x, y });
@@ -179,8 +179,8 @@ export default class Display extends CanvasMixin {
 
     Vue.prototype.$guideLine({
         context,
-        width: this.guideCanvas.width,
-        height: this.guideCanvas.height
+        width: CanvasStore.guideCanvas.width,
+        height: CanvasStore.guideCanvas.height
       },
       { x, y },
       Vue.prototype.$stringifyColorData(guideColor)
@@ -198,31 +198,36 @@ export default class Display extends CanvasMixin {
     if (this.pointedFace) {
       Vue.prototype.$selectFaceAnimation({
         context,
-        width: this.guideCanvas.width,
-        height: this.guideCanvas.height
+        width: CanvasStore.guideCanvas.width,
+        height: CanvasStore.guideCanvas.height
       }, this.pointedFace);
     }
   }
 
   snapToPoint({ offsetX, offsetY }) {
     const snap: Vertex = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
-    const context: CanvasRenderingContext2D = this.snapCanvas.getContext('2d');
+    const context: CanvasRenderingContext2D = CanvasStore.snapCanvas.getContext('2d');
 
     snap
       ? Vue.prototype.$drawSnapGuide(snap, {
         context,
-        width: this.snapCanvas.width,
-        height: this.snapCanvas.height
+        width: CanvasStore.snapCanvas.width,
+        height: CanvasStore.snapCanvas.height
       })
-      : Vue.prototype.$cancelSnapGuide(context, this.snapCanvas.width, this.snapCanvas.height);
+      : Vue.prototype.$cancelSnapGuide(context, CanvasStore.snapCanvas.width, CanvasStore.snapCanvas.height);
   }
 
   mounted() {
     window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
-    this.guideCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide');
-    this.polyCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly');
-    this.snapCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap');
-    this.imageCopy = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy');
+    // this.guideCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide');
+    // this.polyCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly');
+    // this.snapCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap');
+    // this.imageCopy = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy');
+
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap'), canvasName: 'snapCanvas' });
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
   }
 }
 
