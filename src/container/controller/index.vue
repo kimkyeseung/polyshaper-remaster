@@ -2,15 +2,26 @@
   <div class="controller">
     <app-title className="controller__title"/>
 
-    <section v-if="selectedFace">
-      <form>
-        <input type="color" name="" id="" :value="$hexColorFormatter(selectedFace.color)" @change="handleColorChange">
-        <p>{{selectedFace.color}}</p>
-      </form>
-      <b-button>Deselect</b-button>
+    <section v-if="selectedFace" class="controller__section">
+      <fieldset>
+        <legend class="controller__section_selected-face">Selected Face</legend>
+        <div class="input_wrap">
+          <input type="color"
+            :value="$hexColorFormatter(selectedFace.color)"
+            @change="handleColorChange"
+          />
+        </div>
+        <div class="text_wrap">
+          <p>{{$hexColorFormatter(selectedFace.color)}}</p>
+          <p>{{selectedFace.color}}</p>
+        </div>
+        <b-button class="button">Deselect</b-button>
+        <b-button class="button">Get Color from Image</b-button>
+        <b-button class="button danger">Delete Face</b-button>
+      </fieldset>
     </section>
-    <section>
-      <b-button @click="handleImageReset">Image Reset</b-button>
+    <section class="controller__section">
+      <b-button class="button" @click="handleImageReset">Image Reset</b-button>
     </section>
   </div>
 </template>
@@ -31,14 +42,14 @@ export default class Controller extends Vue {
     return PolyStore.selectedFace;
   }
 
-  set selectedFace(color) { // not work yet
-    PolyStore.changeFaceColor(color);
-  }
-
   handleColorChange({target}: {target: HTMLInputElement}) {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
     PolyStore.changeFaceColor(color);
     Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
+  }
+
+  handleDeselectFace() {
+    //
   }
 
   handleImageReset() {

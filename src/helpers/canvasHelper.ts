@@ -19,6 +19,7 @@ const canvasHelper = {
 
     vue.prototype.$makeFaceOnCanvas = ({ color, vertices }: Face, canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      context.save();
       vertices.forEach((vertex: Vertex) => {
         context.beginPath();
         context.moveTo(vertex.x, vertex.y);
@@ -29,6 +30,7 @@ const canvasHelper = {
         context.fillStyle = color;
         context.fill();
       });
+      context.restore();
       vue.vertexStack.length = 0;
     };
 
@@ -148,6 +150,7 @@ const canvasHelper = {
     };
 
     vue.prototype.$guideLine = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { x, y }, color?: string) => {
+      context.save();
       context.clearRect(0, 0, width, height);
       if (vue.vertexStack.length === 0) {
         return;
@@ -165,6 +168,7 @@ const canvasHelper = {
       context.lineWidth = 2;
       context.strokeStyle = color || 'rgb(255, 127, 0)';
       context.stroke();
+      context.restore();
     };
 
     vue.snapGuide;
@@ -181,12 +185,14 @@ const canvasHelper = {
       //   vue.snapGuide = window.requestAnimationFrame(snapMotion);
       // }
       // window.requestAnimationFrame(snapMotion);
+      context.save();
       context.clearRect(0, 0, width, height);
       context.beginPath();
       context.arc(x, y, 4, 0, Math.PI * 2);
       context.fillStyle = 'orange';
       context.fill();
       context.closePath();
+      context.restore();
     };
 
     vue.prototype.$cancelSnapGuide = (context: CanvasRenderingContext2D, width: number, height: number) => {

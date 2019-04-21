@@ -6,11 +6,11 @@
       @mousemove="handleMouseMove"
       @click="handleClick">
       <canvas
-        name="snap"
+        name="guide"
         :width="canvasWidth"
         :height="canvasHeight"/>
       <canvas
-        name="guide"
+        name="snap"
         :width="canvasWidth"
         :height="canvasHeight"/>
       <canvas
@@ -224,9 +224,9 @@ export default class Display extends Vue {
     // this.snapCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap');
     // this.imageCopy = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy');
 
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap'), canvasName: 'snapCanvas' });
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap'), canvasName: 'snapCanvas' });
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
   }
 }

@@ -1,0 +1,16 @@
+.button {
+  display: block;
+  width: 100%;
+  border-radius: 2px;
+  background: $color-main;
+  &:hover {
+    background: $color-main2;
+  }
+}
+
+.danger {
+  background: $color-danger;
+  &:hover {
+    background: red;
+  }
+}

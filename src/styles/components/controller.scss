@@ -1,6 +1,7 @@
 .controller {
   width: 320px;
   margin-left: calc(100% - 320px);
+  color: $color-achromatic1;
 
   .controller__title {
     margin-top: 40px;
@@ -14,6 +15,43 @@
       border: 2px solid $color-main;
       border-radius: 30px;
       margin-left: 200px;
+    }
+  }
+
+  .controller__section {
+    padding: 20px;
+    fieldset {
+      text-align: left;
+      legend {
+        font: $font-sub-en;
+        margin-bottom: 20px;
+      }
+      .input_wrap {
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        border-radius: 100%;
+        overflow: hidden;
+        input[type="color"] {
+          display: block;
+          width: 120%;
+          height: 120%;
+          border: 0;
+          background: none;
+          margin-top: -10%;
+          margin-left: -10%;
+          cursor: pointer;
+        }
+      }
+      .text_wrap {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 20px;
+        margin-top: 4px;
+        p {
+          font: $font-contents-en;
+        }
+      }
     }
   }
 }

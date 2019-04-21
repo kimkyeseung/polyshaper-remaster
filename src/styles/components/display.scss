@@ -19,6 +19,14 @@
       width: 100%;
       min-height: 100%;
     }
+
+    canvas[name="poly"] {
+      z-index: 0;
+    }
+
+    canvas[name="guide"], canvas[name="snap"] {
+      z-index: 1;
+    }
   
     img {
       width: 100%;
