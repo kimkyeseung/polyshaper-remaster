@@ -24,7 +24,7 @@
       z-index: 0;
     }
 
-    canvas[name="guide"], canvas[name="snap"] {
+    canvas[name="guide"], canvas[name="snap"], canvas[name="selectedFace"] {
       z-index: 1;
     }
   

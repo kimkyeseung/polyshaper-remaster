@@ -5,13 +5,15 @@ import store from '@/store';
 
 @Module({ dynamic: true, name: 'canvasStore', store })
 class CanvasStore extends VuexModule {
-  public guideCanvas: HTMLCanvasElement | null = null;
+  public guideCanvas: HTMLCanvasElement = null;
 
-  public polyCanvas: HTMLCanvasElement | null = null;
+  public polyCanvas: HTMLCanvasElement = null;
 
-  public snapCanvas: HTMLCanvasElement | null = null;
+  public snapCanvas: HTMLCanvasElement = null;
 
-  public imageCopy: HTMLCanvasElement | null = null;
+  public imageCopy: HTMLCanvasElement = null;
+
+  public selectedFace: HTMLCanvasElement = null;
 
   @Mutation
   updateCanvasElement({ canvas, canvasName }: {canvas: HTMLCanvasElement, canvasName: string}) {

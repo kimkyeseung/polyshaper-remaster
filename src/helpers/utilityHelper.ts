@@ -4,6 +4,15 @@ const utilityHelper = {
   install(vue) {
     vue.prototype.$stringifyColorData = ({ r, g, b }: ColorData): string => `rgb(${r}, ${g}, ${b})`;
 
+    vue.prototype.$colorDataParser = (color: string): ColorData => {
+      const [r, g, b] = color.substring(4, color.length - 1).split(', ');
+      return {
+        r: Number(r),
+        g: Number(g), 
+        b: Number(b)
+      };
+    }
+
     vue.prototype.$checkInsideTriangle = ({ x, y }: MousePosition, face: Face): boolean => {
       const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
       const dot = (u, v) => u[0] * v[0] + u[1] * v[1];

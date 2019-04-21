@@ -2,18 +2,9 @@ import { MousePosition, Face, ColorData, Vertex } from '@/models/interfaces';
 
 const canvasHelper = {
   install(vue) {
-    vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, animated: boolean) => {
-      const context: CanvasRenderingContext2D = canvas.getContext('2d');
-      // if (animated) {
-      //   vue.vertexStack.push({ x, y });
-      //   vue.blinkAnimation(canvas);
-      // } else {
-      //   context.beginPath();
-      //   context.arc(x, y, 3, 0, Math.PI * 2);
-      //   context.fillStyle = 'red';
-      //   context.fill();
-      // }
+    vue.vertexStack = [];
 
+    vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, animated: boolean) => {
       vue.vertexStack.push({ x, y });
     };
 
@@ -32,10 +23,6 @@ const canvasHelper = {
       });
       context.restore();
       vue.vertexStack.length = 0;
-    };
-
-    vue.prototype.$faceColorChange = () => {
-
     };
 
     vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
@@ -80,7 +67,7 @@ const canvasHelper = {
       return rgb;
     };
 
-    vue.prototype.$getComplementaryColor = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, imageData: string): ColorData => {
+    vue.prototype.$getComplementaryColorFromCoordinate = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, imageData: string): ColorData => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       const { data }: { data: Uint8ClampedArray } = context.getImageData(x, y, 1, 1);
 
@@ -88,7 +75,6 @@ const canvasHelper = {
       img.src = imageData;
       context.drawImage(img, x - 5, y - 5, 10, 10, x - 5, y - 5, 10, 10); // for stability draw 10px rect not (img, x, y, 1, 1, x, y, 1, 1)
 
-      let count = 0;
       const rgb: ColorData = {
         r: 255 - data[0],
         g: 255 - data[1],
@@ -97,38 +83,37 @@ const canvasHelper = {
       return rgb;
     };
 
-    vue.vertexStack = []; // 현재는 애니메이션이 들어갈 점들을 배열에 담아두었다. 애니메이션이 적용될
+    vue.prototype.$getComplementaryColor = (color: ColorData): ColorData => ({
+      r: 255 - color.r,
+      g: 255 - color.g,
+      b: 255 - color.b
+    });
 
-    // vue.blinkAnimation = (canvas: HTMLCanvasElement) => {
-    //   const context: CanvasRenderingContext2D = canvas.getContext('2d');
-
-    //   function blink(timestamp) {
-    //     let start: number = timestamp % 1000;
-    //     context.clearRect(0, 0, canvas.width, canvas.height);
-
-    //     vue.vertexStack.forEach((animatedVertex: MousePosition) => {
-
-    //       context.beginPath();
-    //       context.arc(animatedVertex.x, animatedVertex.y, start / 100, 0, Math.PI * 2);
-    //       context.fillStyle = `rgba(0, 0, 0, ${100 / start})`;
-    //       context.fill();
-    //       context.closePath();
-    //     });
-
-    //     const id = window.requestAnimationFrame(blink);
-    //     if (!vue.vertexStack.length) {
-    //       console.log('done') ;
-    //       window.cancelAnimationFrame(id);
-    //     }
-    //   }
-
-    //   window.requestAnimationFrame(blink);
-    // };
-
-    vue.prototype.$selectFaceAnimation = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { vertices }: Face) => {
+    vue.prototype.$displayFaceBorder = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { vertices }: Face) => {
       context.clearRect(0, 0, width, height);
       context.save();
       context.beginPath();
+      context.lineJoin = 'round';
+      vertices.forEach((vertex: Vertex) => {
+        context.beginPath();
+        context.moveTo(vertex.x, vertex.y);
+        vertex.next.forEach((next: Vertex) => {
+          context.lineTo(next.x, next.y);
+        });
+        context.closePath();
+
+        context.lineWidth = 1;
+        context.strokeStyle = 'rgb(255, 127, 0)';
+        context.stroke();
+      });
+      context.restore();
+    };
+
+    vue.prototype.$displaySelectedFace = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { vertices }: Face, { r, g, b }: ColorData) => {
+      context.clearRect(0, 0, width, height);
+      context.save();
+      context.beginPath();
+      context.lineJoin = 'round';
       vertices.forEach((vertex: Vertex) => {
         context.beginPath();
         context.moveTo(vertex.x, vertex.y);
@@ -138,7 +123,7 @@ const canvasHelper = {
         context.closePath();
 
         context.lineWidth = 2;
-        context.strokeStyle = 'rgb(255, 127, 0)';
+        context.strokeStyle = `rgb(${r}, ${g}, ${b})`;
 
         context.shadowColor = 'rgba(0, 0, 0, .4)';
         context.shadowBlur = 8;
@@ -156,6 +141,7 @@ const canvasHelper = {
         return;
       }
       context.beginPath();
+      context.lineJoin = 'round';
       context.moveTo(vue.vertexStack[0].x, vue.vertexStack[0].y);
       vue.vertexStack.forEach(({ x, y }) => {
         context.arc(x, y, 3, 0, Math.PI * 2);

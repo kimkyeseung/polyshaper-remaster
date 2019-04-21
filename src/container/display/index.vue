@@ -6,11 +6,15 @@
       @mousemove="handleMouseMove"
       @click="handleClick">
       <canvas
-        name="guide"
+        name="snap"
         :width="canvasWidth"
         :height="canvasHeight"/>
       <canvas
-        name="snap"
+        name="selectedFace"
+        :width="canvasWidth"
+        :height="canvasHeight"/>
+      <canvas
+        name="guide"
         :width="canvasWidth"
         :height="canvasHeight"/>
       <canvas
@@ -164,11 +168,20 @@ export default class Display extends Vue {
 
   selectFace(face: Face) {
     PolyStore.selectFace(face);
+
+    const context: CanvasRenderingContext2D = CanvasStore.selectedFace.getContext('2d');
+    const color: ColorData = Vue.prototype.$colorDataParser(face.color);
+    console.log(Vue.prototype.$getComplementaryColor(color));
+    Vue.prototype.$displaySelectedFace({
+      context,
+      width: CanvasStore.selectedFace.width,
+      height: CanvasStore.selectedFace.height
+    }, face, Vue.prototype.$getComplementaryColor(color));
   }
 
   positionChecker({ offsetX, offsetY }: MouseEvent) {
     const context: CanvasRenderingContext2D = CanvasStore.guideCanvas.getContext('2d');
-    const guideColor = Vue.prototype.$getComplementaryColor({ x: offsetX, y: offsetY }, CanvasStore.imageCopy, ImageStore.image);
+    const guideColor = Vue.prototype.$getComplementaryColorFromCoordinate({ x: offsetX, y: offsetY }, CanvasStore.imageCopy, ImageStore.image);
 
     let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY });
     const snap: Vertex = PolyStore.vertices.getSnapPoint({ x, y });
@@ -186,7 +199,7 @@ export default class Display extends Vue {
       Vue.prototype.$stringifyColorData(guideColor)
     );
 
-    PolyStore.faces.every(face => {
+    PolyStore.faces.every((face: Face) => {
       if (Vue.prototype.$checkInsideTriangle({ x: offsetX, y: offsetY }, face)) {
         this.pointedFace = face;
         return false;
@@ -196,7 +209,7 @@ export default class Display extends Vue {
     });
 
     if (this.pointedFace) {
-      Vue.prototype.$selectFaceAnimation({
+      Vue.prototype.$displayFaceBorder({
         context,
         width: CanvasStore.guideCanvas.width,
         height: CanvasStore.guideCanvas.height
@@ -219,14 +232,10 @@ export default class Display extends Vue {
 
   mounted() {
     window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
-    // this.guideCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide');
-    // this.polyCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly');
-    // this.snapCanvas = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap');
-    // this.imageCopy = <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy');
-
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap'), canvasName: 'snapCanvas' });
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('selectedFace'), canvasName: 'selectedFace' });
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
   }
 }
