@@ -53,7 +53,7 @@ export default class Display extends Vue {
     x: 0,
     y: 0,
   };
-  private pointedFace: Face;
+  private pointedFace: Face = null;
 
   public $refs!: {
     image: HTMLImageElement;
@@ -65,10 +65,6 @@ export default class Display extends Vue {
       ImageStore.getImageFromStorage();
     }
     return <string>ImageStore.image;
-  }
-
-  get isAnimated(): boolean {
-    return UiStore.isAnimated;
   }
 
   get vertextSnapGap(): number {
@@ -106,6 +102,7 @@ export default class Display extends Vue {
   }
 
   handleClick(ev: MouseEvent) {
+    console.log(this.pointedFace);
     this.pointedFace
       ? this.selectFace(this.pointedFace)
       : this.makeVertex(ev, CanvasStore.guideCanvas);
@@ -132,7 +129,7 @@ export default class Display extends Vue {
       y = snap.y;
     }
 
-    Vue.prototype.$makeVertexOnCanvas({ x, y }, canvas, this.isAnimated);
+    Vue.prototype.$makeVertexOnCanvas({ x, y });
     const newVertex: Vertex = {
       vertexId: PolyStore.vertices.getSize() + this.vertices.length,
       x,
@@ -171,7 +168,6 @@ export default class Display extends Vue {
 
     const context: CanvasRenderingContext2D = CanvasStore.selectedFace.getContext('2d');
     const color: ColorData = Vue.prototype.$colorDataParser(face.color);
-    console.log(Vue.prototype.$getComplementaryColor(color));
     Vue.prototype.$displaySelectedFace({
       context,
       width: CanvasStore.selectedFace.width,
@@ -207,6 +203,10 @@ export default class Display extends Vue {
       this.pointedFace = null;
       return true;
     });
+
+    if (PolyStore.faces.length === 0) {
+      this.pointedFace = null;
+    }
 
     if (this.pointedFace) {
       Vue.prototype.$displayFaceBorder({

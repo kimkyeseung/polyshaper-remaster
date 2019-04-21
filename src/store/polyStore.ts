@@ -13,7 +13,7 @@ class PolyStore extends VuexModule {
 
   public faces: Face[] = [];
 
-  public selectedFace: Face | null = null;
+  public selectedFace: Face = null;
 
   @Mutation
   pushVertex(vertex: Vertex) {
@@ -34,17 +34,26 @@ class PolyStore extends VuexModule {
   @Mutation
   updateSelectedFace(face: Face) {
     this.selectedFace = face;
-    const selectedFace = this.faces.find((face: Face ) => {
-      return face === this.selectedFace;
+  }
+
+  @Mutation
+  removeSelectedFace() {
+    this.selectedFace = null;
+  }
+
+  @Mutation
+  popFace(face: Face) {
+    const faceIndex = this.faces.findIndex(faceTarget => {
+      return faceTarget === face;
     });
-    selectedFace.selected = true;
+    this.faces.splice(faceIndex, 1);
   }
 
   @Action
   addVertex(vertex: Vertex) {
     this.context.commit('pushVertex', vertex);
   }
-  
+
   @Action
   addFace(face: Face) {
     this.context.commit('pushFace', face);
@@ -61,9 +70,19 @@ class PolyStore extends VuexModule {
   }
 
   @Action
+  deselectFace() {
+    this.context.commit('removeSelectedFace');
+  }
+
+  @Action
   changeFaceColor(color) {
     this.selectedFace.color = color;
     this.context.commit('updateSelectedFace', this.selectedFace);
+  }
+
+  @Action
+  removeFace(face: Face) {
+    this.context.commit('popFace', face);
   }
 }
 

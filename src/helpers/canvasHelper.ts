@@ -1,10 +1,12 @@
-import { MousePosition, Face, ColorData, Vertex } from '@/models/interfaces';
+import {
+  MousePosition, Face, ColorData, Vertex,
+} from '@/models/interfaces';
 
 const canvasHelper = {
   install(vue) {
     vue.vertexStack = [];
 
-    vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition, canvas: HTMLCanvasElement, animated: boolean) => {
+    vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition) => {
       vue.vertexStack.push({ x, y });
     };
 
@@ -28,6 +30,26 @@ const canvasHelper = {
     vue.prototype.$clearCanvas = (canvas: HTMLCanvasElement) => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       context.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
+    vue.prototype.$drawAllFaces = (canvas: HTMLCanvasElement, faces: Face[]) => {
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.save();
+      context.beginPath();
+      faces.forEach((face: Face) => {
+        face.vertices.forEach((vertex: Vertex) => {
+          context.beginPath();
+          context.moveTo(vertex.x, vertex.y);
+          vertex.next.forEach((next: Vertex) => {
+            context.lineTo(next.x, next.y);
+          });
+          context.closePath();
+          context.fillStyle = face.color;
+          context.fill();
+        });
+      });
+      context.restore();
     };
 
     vue.prototype.$getColorAverage = (vertices: Face['vertices'], canvas: HTMLCanvasElement, imageData: string): ColorData => {
@@ -86,7 +108,7 @@ const canvasHelper = {
     vue.prototype.$getComplementaryColor = (color: ColorData): ColorData => ({
       r: 255 - color.r,
       g: 255 - color.g,
-      b: 255 - color.b
+      b: 255 - color.b,
     });
 
     vue.prototype.$displayFaceBorder = ({ context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }, { vertices }: Face) => {

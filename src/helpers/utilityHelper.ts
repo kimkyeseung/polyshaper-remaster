@@ -8,18 +8,18 @@ const utilityHelper = {
       const [r, g, b] = color.substring(4, color.length - 1).split(', ');
       return {
         r: Number(r),
-        g: Number(g), 
-        b: Number(b)
+        g: Number(g),
+        b: Number(b),
       };
-    }
+    };
 
     vue.prototype.$checkInsideTriangle = ({ x, y }: MousePosition, face: Face): boolean => {
       const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
       const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
-      const p = [ x, y ];
-      const a = [ face.vertices[0].x, face.vertices[0].y ];
-      const b = [ face.vertices[1].x, face.vertices[1].y ];
-      const c = [ face.vertices[2].x, face.vertices[2].y ];
+      const p = [x, y];
+      const a = [face.vertices[0].x, face.vertices[0].y];
+      const b = [face.vertices[1].x, face.vertices[1].y];
+      const c = [face.vertices[2].x, face.vertices[2].y];
       const v0 = vector(a, c);
       const v1 = vector(a, b);
       const v2 = vector(a, p);
@@ -34,7 +34,7 @@ const utilityHelper = {
       return u >= 0 && v >= 0 && u + v < 1;
     };
 
-    vue.prototype.$rgbColorFormatter = (color: string) => `rgb(${color.match(/[A-Za-z0-9]{2}/g).map((v: string) => parseInt(v, 16)).join(', ') + ')'}`;
+    vue.prototype.$rgbColorFormatter = (color: string) => `rgb(${`${color.match(/[A-Za-z0-9]{2}/g).map((v: string) => parseInt(v, 16)).join(', ')})`}`;
 
     vue.prototype.$hexColorFormatter = (color: string) => `#${color.substring(4, color.length - 1).split(', ').map((v: string) => {
       const hex = Number(v).toString(16);

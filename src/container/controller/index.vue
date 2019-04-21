@@ -15,9 +15,9 @@
           <p>{{$hexColorFormatter(selectedFace.color)}}</p>
           <p>{{selectedFace.color}}</p>
         </div>
-        <b-button class="button">Deselect</b-button>
+        <b-button class="button" @click="handleDeselectFace">Deselect</b-button>
         <b-button class="button">Get Color from Image</b-button>
-        <b-button class="button danger">Delete Face</b-button>
+        <b-button class="button danger" @click="handleDelete">Delete Face</b-button>
       </fieldset>
     </section>
     <section class="controller__section">
@@ -33,6 +33,7 @@ import PolyStore from '@/store/polyStore';
 import { AppTitle } from '@/components';
 import { Face } from '@/models/interfaces';
 import canvasStore from '../../store/canvasStore';
+import polyStore from '@/store/polyStore';
 
 @Component({ components: { AppTitle } })
 export default class Controller extends Vue {
@@ -42,19 +43,58 @@ export default class Controller extends Vue {
     return PolyStore.selectedFace;
   }
 
-  handleColorChange({target}: {target: HTMLInputElement}) {
+  handleColorChange({ target }: {target: HTMLInputElement}) {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
     PolyStore.changeFaceColor(color);
     Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
   }
 
   handleDeselectFace() {
-    //
+    PolyStore.deselectFace();
+    Vue.prototype.$clearCanvas(canvasStore.selectedFace);
+    Vue.prototype.$clearCanvas(canvasStore.guideCanvas);
+  }
+
+  handleDeleteFace() {
+    if (!this.selectedFace) {
+      return;
+    }
+    PolyStore.removeFace(this.selectedFace);
+    this.handleDeselectFace();
+    Vue.prototype.$drawAllFaces(canvasStore.polyCanvas, polyStore.faces);
   }
 
   handleImageReset() {
     ImageStore.uploadImage();
     PolyStore.initialize();
+  }
+
+  handleEscape() {
+    this.handleDeselectFace();
+  }
+
+  handleDelete() {
+    this.handleDeleteFace();
+  }
+
+  handleKeyup({ key }: KeyboardEvent) {
+    switch (key) {
+      case 'Escape':
+        this.handleEscape();
+        return;
+      case 'Delete':
+        this.handleDelete();
+
+      default:
+    }
+  }
+
+  created() {
+    window.addEventListener('keyup', this.handleKeyup);
+  }
+
+  beforeDestroy() {
+    window.removeEventListener('keyup', this.handleKeyup);
   }
 }
 </script>

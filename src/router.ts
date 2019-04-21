@@ -28,8 +28,6 @@ const router: Router = new Router({
 });
 
 
-router.beforeEach((to: Route, from: Route, next: Function) => {
-  return next();
-});
+router.beforeEach((to: Route, from: Route, next: Function) => next());
 
 export default router;
