@@ -24,7 +24,7 @@
     <section class="controller__section">
       <fieldset>
         <legend class="controller__section_background">Background</legend>
-          <b-form-checkbox v-model="backgroundVisible" switch>Background Image</b-form-checkbox>
+        <b-form-checkbox v-model="backgroundVisible" switch>Background Image</b-form-checkbox>
       </fieldset>
     </section>
 

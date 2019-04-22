@@ -11,6 +11,14 @@ const canvasHelper = {
       context.drawImage(image, 0, 0);
     };
 
+    vue.prototype.$fillBackgroundColor = (color: string, canvas: HTMLCanvasElement) => {
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      context.save();
+      context.fillStyle = color;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.restore();
+    }
+
     vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition) => {
       vue.vertexStack.push({ x, y });
     };
