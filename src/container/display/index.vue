@@ -23,7 +23,6 @@
         :height="canvasHeight"/>
       <canvas
         name="imageCopy"
-        v-show="false"
         :width="canvasWidth"
         :height="canvasHeight"/>
       <img
@@ -97,8 +96,7 @@ export default class Display extends Vue {
   }
 
   imageCopyToCanvas() {
-    const context: CanvasRenderingContext2D = CanvasStore.imageCopy.getContext('2d');
-    context.drawImage(this.$refs.image, 0, 0);
+    Vue.prototype.$drawBackgroundImage(this.$refs.image, CanvasStore.imageCopy);
   }
 
   handleClick(ev: MouseEvent) {

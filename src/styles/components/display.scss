@@ -20,12 +20,16 @@
       min-height: 100%;
     }
 
-    canvas[name="poly"] {
+    canvas[name="imageCopy"] {
       z-index: 0;
     }
 
-    canvas[name="guide"], canvas[name="snap"], canvas[name="selectedFace"] {
+    canvas[name="poly"] {
       z-index: 1;
+    }
+
+    canvas[name="guide"], canvas[name="snap"], canvas[name="selectedFace"] {
+      z-index: 2;
     }
   
     img {

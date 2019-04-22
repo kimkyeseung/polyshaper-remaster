@@ -6,6 +6,11 @@ const canvasHelper = {
   install(vue) {
     vue.vertexStack = [];
 
+    vue.prototype.$drawBackgroundImage = (image: HTMLImageElement, canvas: HTMLCanvasElement) => {
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      context.drawImage(image, 0, 0);
+    };
+
     vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition) => {
       vue.vertexStack.push({ x, y });
     };

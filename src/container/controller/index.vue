@@ -20,6 +20,14 @@
         <b-button class="button danger" @click="handleDelete">Delete Face</b-button>
       </fieldset>
     </section>
+
+    <section class="controller__section">
+      <fieldset>
+        <legend class="controller__section_background">Background</legend>
+          <b-form-checkbox v-model="backgroundVisible" switch>Background Image</b-form-checkbox>
+      </fieldset>
+    </section>
+
     <section class="controller__section">
       <b-button class="button" @click="handleImageReset">Image Reset</b-button>
     </section>
@@ -27,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import ImageStore from '@/store/imageStore';
 import PolyStore from '@/store/polyStore';
 import { AppTitle } from '@/components';
@@ -41,6 +49,14 @@ export default class Controller extends Vue {
 
   get selectedFace(): Face {
     return PolyStore.selectedFace;
+  }
+
+  get backgroundVisible(): boolean {
+    return PolyStore.backgroundVisible;
+  }
+
+  set backgroundVisible(value: boolean) {
+    PolyStore.toggleBackgroundVisible(value);
   }
 
   handleColorChange({ target }: {target: HTMLInputElement}) {
@@ -84,9 +100,15 @@ export default class Controller extends Vue {
         return;
       case 'Delete':
         this.handleDelete();
-
+        return;
       default:
+        return;
     }
+  }
+
+  @Watch('backgroundVisible')
+  onBackgroundVisibleChanged(value: boolean) {
+    // value ? 
   }
 
   created() {

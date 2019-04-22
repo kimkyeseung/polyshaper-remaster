@@ -15,6 +15,8 @@ class PolyStore extends VuexModule {
 
   public selectedFace: Face = null;
 
+  public backgroundVisible: boolean = true;
+
   @Mutation
   pushVertex(vertex: Vertex) {
     this.vertices.set(vertex);
@@ -49,6 +51,12 @@ class PolyStore extends VuexModule {
     this.faces.splice(faceIndex, 1);
   }
 
+  @Mutation
+  updateBackgroundVisible(value: boolean) {
+    this.backgroundVisible = value;
+  }
+
+  // Actions
   @Action
   addVertex(vertex: Vertex) {
     this.context.commit('pushVertex', vertex);
@@ -83,6 +91,11 @@ class PolyStore extends VuexModule {
   @Action
   removeFace(face: Face) {
     this.context.commit('popFace', face);
+  }
+
+  @Action
+  toggleBackgroundVisible(value: boolean) {
+    this.context.commit('updateBackgroundVisible', value);
   }
 }
 
