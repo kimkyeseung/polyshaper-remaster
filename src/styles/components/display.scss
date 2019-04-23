@@ -18,9 +18,10 @@
       position: absolute;
       width: 100%;
       min-height: 100%;
+      box-sizing: border-box;
     }
 
-    canvas[name="imageCopy"] {
+    canvas[name="background"] {
       z-index: 0;
     }
 
@@ -35,6 +36,7 @@
     img {
       width: 100%;
       height: 100%;
+      opacity: 0;
     }
   }
 }

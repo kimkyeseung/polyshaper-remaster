@@ -15,6 +15,8 @@ class CanvasStore extends VuexModule {
 
   public selectedFace: HTMLCanvasElement = null;
 
+  public backgroundCanvas: HTMLCanvasElement = null;
+
   @Mutation
   updateCanvasElement({ canvas, canvasName }: {canvas: HTMLCanvasElement, canvasName: string}) {
     this[canvasName] = canvas;

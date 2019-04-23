@@ -25,6 +25,16 @@
       <fieldset>
         <legend class="controller__section_background">Background</legend>
         <b-form-checkbox v-model="backgroundVisible" switch>Background Image</b-form-checkbox>
+        <label for="backgroundColor">
+          Fill Background
+          <input
+            id="backgroundColor"
+            type="color"
+            value="black"
+            ref="backgroundColor"
+            @change="handleSelectBackgroundColor"
+          />
+        </label>
       </fieldset>
     </section>
 
@@ -47,6 +57,12 @@ import polyStore from '@/store/polyStore';
 export default class Controller extends Vue {
   public color = Vue.prototype.$hexColorFormatter('rgb(255, 255, 255)');
 
+  public backgroundOpacity: number = 1;
+
+  public $refs!: {
+    backgroundColor: HTMLInputElement;
+  }
+
   get selectedFace(): Face {
     return PolyStore.selectedFace;
   }
@@ -63,6 +79,11 @@ export default class Controller extends Vue {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
     PolyStore.changeFaceColor(color);
     Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
+  }
+
+  handleSelectBackgroundColor({ target }: {target: HTMLInputElement}) {
+    const color = Vue.prototype.$rgbColorFormatter(target.value);
+    Vue.prototype.$fillBackgroundColor(color, canvasStore.backgroundCanvas);
   }
 
   handleDeselectFace() {
@@ -108,7 +129,9 @@ export default class Controller extends Vue {
 
   @Watch('backgroundVisible')
   onBackgroundVisibleChanged(value: boolean) {
-    // value ? 
+    value
+      ? Vue.prototype.$drawBackgroundImage(ImageStore.image, canvasStore.backgroundCanvas, this.backgroundOpacity)
+      : console.log(this.$refs.backgroundColor.value);/* Vue.prototype.$fillBackgroundColor(this.$refs) */
   }
 
   created() {

@@ -6,8 +6,10 @@ const canvasHelper = {
   install(vue) {
     vue.vertexStack = [];
 
-    vue.prototype.$drawBackgroundImage = (image: HTMLImageElement, canvas: HTMLCanvasElement) => {
+    vue.prototype.$drawBackgroundImage = (image: HTMLImageElement, canvas: HTMLCanvasElement, opacity: number = 1) => {
+      console.log(image, canvas, opacity);
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      context.globalAlpha = opacity;
       context.drawImage(image, 0, 0);
     };
 

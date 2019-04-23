@@ -24,6 +24,11 @@
       <canvas
         name="imageCopy"
         :width="canvasWidth"
+        v-show="false"
+        :height="canvasHeight"/>
+      <canvas
+        name="background"
+        :width="canvasWidth"
         :height="canvasHeight"/>
       <img
         :src="uploadedImage"
@@ -73,7 +78,7 @@ export default class Display extends Vue {
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
     this.getImageData(img);
     this.setImageDataToStore(img);
-    this.imageCopyToCanvas();
+    this.$nextTick(this.imageCopyToCanvas);
   }
 
   getImageData(img: HTMLImageElement) {
@@ -96,11 +101,10 @@ export default class Display extends Vue {
   }
 
   imageCopyToCanvas() {
-    Vue.prototype.$drawBackgroundImage(this.$refs.image, CanvasStore.imageCopy);
+    Vue.prototype.$drawBackgroundImage(this.$refs.image, CanvasStore.backgroundCanvas);
   }
 
   handleClick(ev: MouseEvent) {
-    console.log(this.pointedFace);
     this.pointedFace
       ? this.selectFace(this.pointedFace)
       : this.makeVertex(ev, CanvasStore.guideCanvas);
@@ -234,6 +238,7 @@ export default class Display extends Vue {
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('selectedFace'), canvasName: 'selectedFace' });
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
+    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('background'), canvasName: 'backgroundCanvas'});
     CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
   }
 }
