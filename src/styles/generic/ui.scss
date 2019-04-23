@@ -16,3 +16,14 @@
     background: red;
   }
 }
+
+input[type="color"] {
+  display: block;
+  width: 120%;
+  height: 120%;
+  border: 0;
+  background: none;
+  margin-top: -10%;
+  margin-left: -10%;
+  cursor: pointer;
+}

@@ -6,16 +6,23 @@ const canvasHelper = {
   install(vue) {
     vue.vertexStack = [];
 
-    vue.prototype.$drawBackgroundImage = (image: HTMLImageElement, canvas: HTMLCanvasElement, opacity: number = 1) => {
-      console.log(image, canvas, opacity);
-      const context: CanvasRenderingContext2D = canvas.getContext('2d');
-      context.globalAlpha = opacity;
-      context.drawImage(image, 0, 0);
-    };
+    vue.imgaeMemoize;
 
-    vue.prototype.$fillBackgroundColor = (color: string, canvas: HTMLCanvasElement) => {
+    vue.prototype.$drawBackgroundImage = (image: HTMLImageElement = vue.imgaeMemoize, canvas: HTMLCanvasElement, opacity: number = 1) => {
+      if (!vue.imgaeMemoize) {
+        vue.imgaeMemoize = image;
+      }
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       context.save();
+      context.globalAlpha = opacity;
+      context.drawImage(image, 0, 0);
+      context.restore();
+    };
+
+    vue.prototype.$fillBackgroundColor = (color: string, canvas: HTMLCanvasElement, composition: string = 'source-over') => {
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
+      context.save();
+      context.globalCompositeOperation = composition;
       context.fillStyle = color;
       context.fillRect(0, 0, canvas.width, canvas.height);
       context.restore();

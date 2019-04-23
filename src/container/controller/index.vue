@@ -25,15 +25,29 @@
       <fieldset>
         <legend class="controller__section_background">Background</legend>
         <b-form-checkbox v-model="backgroundVisible" switch>Background Image</b-form-checkbox>
+        <label for="opacity" v-if="backgroundVisible">
+          Opacity: {{backgroundOpacity}}
+          <input
+            type="range"
+            name="opacity"
+            id="opacity"
+            min="0.1"
+            max="1"
+            step="0.1"
+            :value="backgroundOpacity"
+            @change="handleOpacityChange">
+        </label>
         <label for="backgroundColor">
           Fill Background
-          <input
-            id="backgroundColor"
-            type="color"
-            value="black"
-            ref="backgroundColor"
-            @change="handleSelectBackgroundColor"
-          />
+          <div class="input_wrap">
+            <input
+              id="backgroundColor"
+              type="color"
+              value="black"
+              ref="backgroundColor"
+              @change="handleSelectBackgroundColor"
+            />
+          </div>
         </label>
       </fieldset>
     </section>
@@ -81,9 +95,17 @@ export default class Controller extends Vue {
     Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
   }
 
+  handleOpacityChange({ target }: {target: HTMLInputElement}) {
+    this.backgroundOpacity = Number(target.value);
+    Vue.prototype.$fillBackgroundColor(this.$refs.backgroundColor.value, canvasStore.backgroundCanvas);
+    Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity);
+  }
+
   handleSelectBackgroundColor({ target }: {target: HTMLInputElement}) {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
+    Vue.prototype.$clearCanvas(canvasStore.backgroundCanvas);
     Vue.prototype.$fillBackgroundColor(color, canvasStore.backgroundCanvas);
+    Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity);
   }
 
   handleDeselectFace() {
@@ -129,9 +151,15 @@ export default class Controller extends Vue {
 
   @Watch('backgroundVisible')
   onBackgroundVisibleChanged(value: boolean) {
-    value
-      ? Vue.prototype.$drawBackgroundImage(ImageStore.image, canvasStore.backgroundCanvas, this.backgroundOpacity)
-      : console.log(this.$refs.backgroundColor.value);/* Vue.prototype.$fillBackgroundColor(this.$refs) */
+    // value
+    //   ? Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity)
+    //   : Vue.prototype.$fillBackgroundColor(this.$refs.backgroundColor.value, canvasStore.backgroundCanvas);
+    if (value) {
+      Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity);
+    } else {
+      Vue.prototype.$clearCanvas(canvasStore.backgroundCanvas);
+      Vue.prototype.$fillBackgroundColor(this.$refs.backgroundColor.value, canvasStore.backgroundCanvas);
+    }
   }
 
   created() {
