@@ -41,10 +41,10 @@
 
 <script lang="ts">
 import { Vue, Component, Watch, Mixins } from 'vue-property-decorator';
-import ImageStore from '@/store/imageStore';
-import UiStore from '@/store/uiStore';
-import PolyStore from '@/store/polyStore';
-import CanvasStore from '@/store/canvasStore';
+import imageStore from '@/store/imageStore';
+import uiStore from '@/store/uiStore';
+import polyStore from '@/store/polyStore';
+import canvasStore from '@/store/canvasStore';
 import { cloneDeep } from 'lodash';
 import { MousePosition, Vertex, Face, ColorData } from '@/models/interfaces';
 
@@ -58,6 +58,7 @@ export default class Display extends Vue {
     y: 0,
   };
   private pointedFace: Face = null;
+  private snap: Vertex;
 
   public $refs!: {
     image: HTMLImageElement;
@@ -65,14 +66,14 @@ export default class Display extends Vue {
   }
 
   get uploadedImage(): string {
-    if (!ImageStore.image) {
-      ImageStore.getImageFromStorage();
+    if (!imageStore.image) {
+      imageStore.getImageFromStorage();
     }
-    return <string>ImageStore.image;
+    return <string>imageStore.image;
   }
 
   get vertextSnapGap(): number {
-    return UiStore.vertexSnapGap;
+    return uiStore.vertexSnapGap;
   }
 
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
@@ -97,17 +98,29 @@ export default class Display extends Vue {
     temporaryContext.drawImage(img, 0, 0);
 
     const dataUrl = temporaryCanvas.toDataURL('image/png');
-    ImageStore.uploadImageToStorage(dataUrl/* .replace(/^data:image\/(png|jpg);base64,/, "") */);
+    imageStore.uploadImageToStorage(dataUrl/* .replace(/^data:image\/(png|jpg);base64,/, "") */);
   }
 
   imageCopyToCanvas() {
-    Vue.prototype.$drawBackgroundImage(this.$refs.image, CanvasStore.backgroundCanvas);
+    Vue.prototype.$drawBackgroundImage(this.$refs.image, canvasStore.backgroundCanvas);
   }
 
   handleClick(ev: MouseEvent) {
-    this.pointedFace
-      ? this.selectFace(this.pointedFace)
-      : this.makeVertex(ev, CanvasStore.guideCanvas);
+    if (polyStore.selectedFace) {
+      if (!this.pointedFace) {
+        this.handleDeselectFace();
+      } else if (this.snap) {
+        this.makeVertex(ev, canvasStore.guideCanvas);
+      } else {
+        this.handleSelectFace(this.pointedFace);
+      }
+    } else {
+      if (this.pointedFace && !this.snap) { 
+        this.handleSelectFace(this.pointedFace);
+      } else {
+        this.makeVertex(ev, canvasStore.guideCanvas);
+      }
+    }
   }
 
   handleMouseMove(ev: MouseEvent) {
@@ -125,22 +138,22 @@ export default class Display extends Vue {
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
     let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
 
-    const snap = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
-    if (snap) {
-      x = snap.x;
-      y = snap.y;
+    // this.snap = polyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    if (this.snap) {
+      x = this.snap.x;
+      y = this.snap.y;
     }
 
     Vue.prototype.$makeVertexOnCanvas({ x, y });
     const newVertex: Vertex = {
-      vertexId: PolyStore.vertices.getSize() + this.vertices.length,
+      vertexId: polyStore.vertices.getSize() + this.vertices.length,
       x,
       y,
       next: [],
     };
     this.vertices.push(newVertex);
     if (this.vertices.length === 3) {
-      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, CanvasStore.polyCanvas);
+      this.makeFace(<[ Vertex, Vertex, Vertex ]>this.vertices, canvasStore.polyCanvas);
     }
   }
 
@@ -149,56 +162,63 @@ export default class Display extends Vue {
     vertices[1].next.push(vertices[0], vertices[2]);
     vertices[2].next.push(vertices[0], vertices[1]);
 
-    const color: ColorData = Vue.prototype.$getColorAverage(vertices, CanvasStore.imageCopy, CanvasStore.backgroundCanvas);
-    // $getColorAverage: 원본 이미지의 색상을 얻으려면 세 번째 인자로 ImageStore.image, 보여지는 색상 값을 얻으려면 CanvasStore.backgroundCanvas.
+    const color: ColorData = Vue.prototype.$getColorAverage(vertices, canvasStore.imageCopy, canvasStore.backgroundCanvas);
+    // $getColorAverage: 원본 이미지의 색상을 얻으려면 세 번째 인자로 imageStore.image, 보여지는 색상 값을 얻으려면 canvasStore.backgroundCanvas.
 
     const newFace: Face = {
-      faceId: PolyStore.faces.length || 0,
+      faceId: polyStore.faces.length || 0,
       color: Vue.prototype.$stringifyColorData(color),
       vertices: cloneDeep(this.vertices),
     };
     this.vertices.forEach((vertex: Vertex) => {
-      PolyStore.addVertex(vertex);
+      polyStore.addVertex(vertex);
     });
-    PolyStore.addFace(newFace);
-    Vue.prototype.$clearCanvas(CanvasStore.guideCanvas);
+    polyStore.addFace(newFace);
+    Vue.prototype.$clearCanvas(canvasStore.guideCanvas);
     Vue.prototype.$makeFaceOnCanvas(newFace, canvas);
     this.vertices.length = 0;
   }
 
-  selectFace(face: Face) {
-    PolyStore.selectFace(face);
+  handleSelectFace(face: Face) {
+    polyStore.selectFace(face);
 
-    const context: CanvasRenderingContext2D = CanvasStore.selectedFace.getContext('2d');
+    const context: CanvasRenderingContext2D = canvasStore.selectedFace.getContext('2d');
     const color: ColorData = Vue.prototype.$colorDataParser(face.color);
     Vue.prototype.$displaySelectedFace({
       context,
-      width: CanvasStore.selectedFace.width,
-      height: CanvasStore.selectedFace.height
+      width: canvasStore.selectedFace.width,
+      height: canvasStore.selectedFace.height
     }, face, Vue.prototype.$getComplementaryColor(color));
+  }
+  
+  handleDeselectFace() {
+    polyStore.deselectFace();
+    Vue.prototype.$clearCanvas(canvasStore.selectedFace);
+    Vue.prototype.$clearCanvas(canvasStore.guideCanvas);
   }
 
   positionChecker({ offsetX, offsetY }: MouseEvent) {
-    const context: CanvasRenderingContext2D = CanvasStore.guideCanvas.getContext('2d');
-    const guideColor = Vue.prototype.$getComplementaryColorFromCoordinate({ x: offsetX, y: offsetY }, CanvasStore.imageCopy, ImageStore.image);
+    const context: CanvasRenderingContext2D = canvasStore.guideCanvas.getContext('2d');
+    const guideColor = Vue.prototype.$getComplementaryColorFromCoordinate({ x: offsetX, y: offsetY }, canvasStore.imageCopy, imageStore.image);
 
     let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY });
-    const snap: Vertex = PolyStore.vertices.getSnapPoint({ x, y });
-    if (snap) {
-      x = snap.x;
-      y = snap.y;
+    // this.snap = polyStore.vertices.getSnapPoint({ x, y });
+    if (this.snap) {
+      x = this.snap.x;
+      y = this.snap.y;
     }
 
+    const color: string = Vue.prototype.$stringifyColorData(guideColor);
     Vue.prototype.$guideLine({
         context,
-        width: CanvasStore.guideCanvas.width,
-        height: CanvasStore.guideCanvas.height
+        width: canvasStore.guideCanvas.width,
+        height: canvasStore.guideCanvas.height
       },
       { x, y },
-      Vue.prototype.$stringifyColorData(guideColor)
+      color
     );
 
-    PolyStore.faces.every((face: Face) => {
+    polyStore.faces.every((face: Face) => {
       if (Vue.prototype.$checkInsideTriangle({ x: offsetX, y: offsetY }, face)) {
         this.pointedFace = face;
         return false;
@@ -207,40 +227,40 @@ export default class Display extends Vue {
       return true;
     });
 
-    if (PolyStore.faces.length === 0) {
+    if (polyStore.faces.length === 0) {
       this.pointedFace = null;
     }
 
     if (this.pointedFace) {
       Vue.prototype.$displayFaceBorder({
         context,
-        width: CanvasStore.guideCanvas.width,
-        height: CanvasStore.guideCanvas.height
+        width: canvasStore.guideCanvas.width,
+        height: canvasStore.guideCanvas.height
       }, this.pointedFace);
     }
   }
 
   snapToPoint({ offsetX, offsetY }) {
-    const snap: Vertex = PolyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
-    const context: CanvasRenderingContext2D = CanvasStore.snapCanvas.getContext('2d');
+    this.snap = polyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    const context: CanvasRenderingContext2D = canvasStore.snapCanvas.getContext('2d');
 
-    snap
-      ? Vue.prototype.$drawSnapGuide(snap, {
+    this.snap
+      ? Vue.prototype.$drawSnapGuide(this.snap, {
         context,
-        width: CanvasStore.snapCanvas.width,
-        height: CanvasStore.snapCanvas.height
+        width: canvasStore.snapCanvas.width,
+        height: canvasStore.snapCanvas.height
       })
-      : Vue.prototype.$cancelSnapGuide(context, CanvasStore.snapCanvas.width, CanvasStore.snapCanvas.height);
+      : Vue.prototype.$cancelSnapGuide(context, canvasStore.snapCanvas.width, canvasStore.snapCanvas.height);
   }
 
   mounted() {
     window.addEventListener('resize', this.getImageData.bind(this, <HTMLImageElement>this.$refs.image));
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap'), canvasName: 'snapCanvas' });
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('selectedFace'), canvasName: 'selectedFace' });
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('background'), canvasName: 'backgroundCanvas'});
-    CanvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('snap'), canvasName: 'snapCanvas' });
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('selectedFace'), canvasName: 'selectedFace' });
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('background'), canvasName: 'backgroundCanvas'});
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
   }
 }
 

@@ -60,8 +60,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import ImageStore from '@/store/imageStore';
-import PolyStore from '@/store/polyStore';
+import imageStore from '@/store/imageStore';
 import { AppTitle } from '@/components';
 import { Face } from '@/models/interfaces';
 import canvasStore from '../../store/canvasStore';
@@ -78,20 +77,20 @@ export default class Controller extends Vue {
   }
 
   get selectedFace(): Face {
-    return PolyStore.selectedFace;
+    return polyStore.selectedFace;
   }
 
   get backgroundVisible(): boolean {
-    return PolyStore.backgroundVisible;
+    return polyStore.backgroundVisible;
   }
 
   set backgroundVisible(value: boolean) {
-    PolyStore.toggleBackgroundVisible(value);
+    polyStore.toggleBackgroundVisible(value);
   }
 
   handleColorChange({ target }: {target: HTMLInputElement}) {
     const color = Vue.prototype.$rgbColorFormatter(target.value);
-    PolyStore.changeFaceColor(color);
+    polyStore.changeFaceColor(color);
     Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
   }
 
@@ -109,7 +108,7 @@ export default class Controller extends Vue {
   }
 
   handleDeselectFace() {
-    PolyStore.deselectFace();
+    polyStore.deselectFace();
     Vue.prototype.$clearCanvas(canvasStore.selectedFace);
     Vue.prototype.$clearCanvas(canvasStore.guideCanvas);
   }
@@ -118,14 +117,14 @@ export default class Controller extends Vue {
     if (!this.selectedFace) {
       return;
     }
-    PolyStore.removeFace(this.selectedFace);
+    polyStore.removeFace(this.selectedFace);
     this.handleDeselectFace();
     Vue.prototype.$drawAllFaces(canvasStore.polyCanvas, polyStore.faces);
   }
 
   handleImageReset() {
-    ImageStore.uploadImage();
-    PolyStore.initialize();
+    imageStore.uploadImage();
+    polyStore.initialize();
   }
 
   handleEscape() {

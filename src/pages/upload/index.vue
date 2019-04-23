@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import ImageStore from '@/store/imageStore';
+import imageStore from '@/store/imageStore';
 import { InputFileEvent } from '@/models/interfaces';
 import { AppTitle } from '@/components';
 import { Modal } from 'bootstrap-vue';
@@ -42,11 +42,11 @@ export default class Upload extends Vue {
   }
 
   get uploadedImage(): string {
-    return ImageStore.image;
+    return imageStore.image;
   }
 
   uploadImageHandler(image?: string): void {
-    ImageStore.uploadImage(image);
+    imageStore.uploadImage(image);
   }
 
   imageFileValidater({ target }: InputFileEvent) {
