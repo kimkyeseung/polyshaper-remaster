@@ -74,9 +74,10 @@ const canvasHelper = {
       context.restore();
     };
 
-    vue.prototype.$getColorAverage = (vertices: Face['vertices'], canvas: HTMLCanvasElement, imageData: string): ColorData => {
+    vue.prototype.$getColorAverage = (vertices: Face['vertices'], canvas: HTMLCanvasElement, imageData: HTMLCanvasElement | string): ColorData => {
       const context: CanvasRenderingContext2D = canvas.getContext('2d');
       const [{ x: x1, y: y1 }, { x: x2, y: y2 }, { x: x3, y: y3 }] = vertices;
+      context.clearRect(0, 0, canvas.width, canvas.height);
       context.save();
       context.beginPath();
       context.moveTo(x1, y1);
@@ -85,14 +86,19 @@ const canvasHelper = {
       context.closePath();
       context.clip();
 
-      const img = document.createElement('img');
-      img.src = imageData;
-      context.drawImage(img, 0, 0);
-
       const biggestX = Math.max(x1, x2, x3);
       const biggestY = Math.max(y1, y2, y3);
       const smallestX = Math.min(x1, x2, x3);
       const smallestY = Math.min(y1, y2, y3);
+
+      if (typeof imageData === 'string') {
+        const img = document.createElement('img');
+        img.src = imageData;
+        context.drawImage(img, 0, 0);
+      } else {
+        context.drawImage(imageData, 0, 0);
+      }
+
       const { data }: { data: Uint8ClampedArray } = context.getImageData(smallestX, smallestY, Math.ceil(biggestX - smallestX) || 1, Math.ceil(biggestY - smallestY) || 1);
       let count = 0;
       const rgb: ColorData = { r: 0, g: 0, b: 0 };

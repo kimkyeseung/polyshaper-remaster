@@ -149,7 +149,8 @@ export default class Display extends Vue {
     vertices[1].next.push(vertices[0], vertices[2]);
     vertices[2].next.push(vertices[0], vertices[1]);
 
-    const color: ColorData = Vue.prototype.$getColorAverage(vertices, CanvasStore.imageCopy, ImageStore.image);
+    const color: ColorData = Vue.prototype.$getColorAverage(vertices, CanvasStore.imageCopy, CanvasStore.backgroundCanvas);
+    // $getColorAverage: 원본 이미지의 색상을 얻으려면 세 번째 인자로 ImageStore.image, 보여지는 색상 값을 얻으려면 CanvasStore.backgroundCanvas.
 
     const newFace: Face = {
       faceId: PolyStore.faces.length || 0,
