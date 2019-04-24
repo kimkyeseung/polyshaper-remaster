@@ -7,10 +7,12 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "start": "npm run serve",
-    "generate-icons": "vsvg -s ./public/icons -t ./src/compiled-icons ts --es6"
+    "generate-icons": "vsvg -s ./public/icons -t ./src/compiled-icons ts --es6",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.15",
+    "gh-pages": "^2.0.1",
     "lodash": "^4.17.11",
     "vue": "^2.6.6",
     "vue-class-component": "^6.3.2",
@@ -71,5 +73,5 @@
   "bugs": {
     "url": "https://github.com/kimkyeseung/polyshaper-remaster/issues"
   },
-  "homepage": "https://github.com/kimkyeseung/polyshaper-remaster#readme"
+  "homepage": "https://github.com/kimkyeseung/polyshaper-remaster"
 }
