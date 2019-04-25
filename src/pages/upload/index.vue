@@ -94,8 +94,8 @@ export default class Upload extends Vue {
 
   mounted() {
     const storedData = JSON.parse(localStorage.getItem('poly'));
-    const storedImage = storedData.image;
-    if (storedImage) {
+    if (storedData) {
+      const storedImage = storedData.image;
       this.storedImage = storedImage;
       this.$refs.storedImageModal.show();
     }
