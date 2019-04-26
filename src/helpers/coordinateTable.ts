@@ -68,4 +68,19 @@ export default class CoordinateTable {
     }
     return target;
   }
+
+  remove({ x, y }: MousePosition) {
+    const { xKey, yKey }: Keys = distinguisher({ x, y } as Vertex);
+    if (this.verticesTable[xKey] && this.verticesTable[xKey][yKey]) {
+      let targetIndex = this.verticesTable[xKey][yKey].findIndex((vertex: Vertex) => x === vertex.x && y === vertex.y);
+      this.verticesTable[xKey][yKey].splice(targetIndex, 1);
+
+      if (this.verticesTable[xKey][yKey].length === 0) {
+        delete this.verticesTable[xKey][yKey];
+      }
+      if (Object.keys(this.verticesTable[xKey]).length === 0) {
+        delete this.verticesTable[xKey];
+      }
+    }
+  }
 }

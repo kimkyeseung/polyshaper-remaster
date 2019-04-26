@@ -23,6 +23,11 @@ class PolyStore extends VuexModule {
   }
 
   @Mutation
+  popVertex({ x, y }: Vertex) {
+    this.vertices.remove({ x, y });
+  }
+
+  @Mutation
   pushFace(face: Face) {
     this.faces.push(face);
   }
@@ -75,6 +80,9 @@ class PolyStore extends VuexModule {
   @Action
   selectFace(face: Face) {
     this.context.commit('updateSelectedFace', face);
+    face.vertices.forEach((vertex: Vertex) => {
+      this.context.commit('popVertex', vertex);
+    });
   }
 
   @Action
