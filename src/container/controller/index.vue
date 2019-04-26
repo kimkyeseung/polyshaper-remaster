@@ -35,7 +35,8 @@
             max="1"
             step="0.1"
             :value="backgroundOpacity"
-            @change="handleOpacityChange">
+            @change="handleOpacityChange"
+          />
         </label>
         <label for="backgroundColor">
           Fill Background
@@ -53,7 +54,36 @@
     </section>
 
     <section class="controller__section">
-      <b-button class="button" @click="handleImageReset">Image Reset</b-button>
+      <fieldset>
+        <legend class="controller__section_auto-populate">Auto Populate</legend>
+        <label for="variance">Variance
+          <input
+            type="range"
+            id="variance"  
+            step="0.01"
+            min="0"
+            max="1"
+          />
+        </label>
+        <label for="cellsize">Cellsize
+          <input
+            type="range"
+            id="cellsize"
+            step="2"
+            min="10"
+            max="200"
+          />
+        </label>
+        <b-button class="button">Auto Populate</b-button>
+      </fieldset>
+    </section>
+
+    <section class="controller__section">
+      <fieldset>
+        <legend class="controller__section_image">Image</legend>
+        <b-button class="button" @click="handleImageReset">Image Reset</b-button>
+        <b-button class="button">Download Image</b-button>
+      </fieldset>
     </section>
   </div>
 </template>
