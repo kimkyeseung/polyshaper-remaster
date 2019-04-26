@@ -235,6 +235,41 @@ const canvasHelper = {
       context.clearRect(0, 0, width, height);
       window.cancelAnimationFrame(vue.snapGuide);
     };
+
+    vue.prototype.$autoPopulate = (maximum: { maxCols: number, maxRows: number }, variance: number, cellsize: number): Vertex[] => {
+      const backgroundVertexNode: Vertex[] = [];
+      let row = 0;
+      let col = 0;
+      let { maxCols, maxRows } = maximum;
+      let amount: number = maxCols * maxRows;
+      for (let i = 0; i < amount; i++) {
+        let vertex = <Vertex>{};
+        if (row % 2 === 0) {
+          vertex.x = (col * cellsize) - cellsize;
+        } else {
+          vertex.x = (col * cellsize) - cellsize - cellsize / 2;
+        }
+        vertex.x = vertex.x + (Math.random() - 0.5) * variance * cellsize * 2;
+        vertex.y = (row * cellsize * 0.865) - cellsize;
+        vertex.y = vertex.y + (Math.random() - 0.5) * variance * cellsize * 2;
+        vertex.col = col;
+        vertex.row = row;
+        vertex.next = [];
+        backgroundVertexNode.push(vertex);
+        col++;
+        if ((i + 1) % maxCols === 0) {
+          row++;
+          col = 0;
+        }
+      }
+      return backgroundVertexNode;
+    }
+
+    vue.prototype.$somethingBackground = (vertices: Vertex[], maxCols: number) => {
+      for (let i = 0; i < vertices.length; i++) {
+
+      }
+    }
   },
 };
 

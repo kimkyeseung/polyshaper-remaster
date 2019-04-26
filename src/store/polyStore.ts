@@ -17,6 +17,14 @@ class PolyStore extends VuexModule {
 
   public backgroundVisible: boolean = true;
 
+  public maxCols: number = 0;
+
+  public maxRows: number = 0;
+
+  public backgroundVariance: number = 0.4;
+
+  public backgroundCellSize: number = 60;
+
   @Mutation
   pushVertex(vertex: Vertex) {
     this.vertices.set(vertex);
@@ -61,7 +69,12 @@ class PolyStore extends VuexModule {
     this.backgroundVisible = value;
   }
 
-  // Actions
+  @Mutation
+  updateMaximum({ maxCols, maxRows }: { maxCols: number, maxRows: number }) {
+    this.maxCols = maxCols;
+    this.maxRows = maxRows;
+  }
+
   @Action
   addVertex(vertex: Vertex) {
     this.context.commit('pushVertex', vertex);
@@ -104,6 +117,11 @@ class PolyStore extends VuexModule {
   @Action
   toggleBackgroundVisible(value: boolean) {
     this.context.commit('updateBackgroundVisible', value);
+  }
+
+  @Action
+  setMaximum(maximum: { maxCols: number, maxRows: number }) {
+    this.context.commit('updateMaximum', maximum);
   }
 }
 

@@ -87,6 +87,10 @@ export default class Display extends Vue {
     this.canvasHeight = img.naturalHeight;
     this.scaleFixRatio.x = img.naturalWidth / img.width;
     this.scaleFixRatio.y = img.naturalHeight / img.height;
+    polyStore.setMaximum({
+      maxCols: Math.ceil(((img.naturalWidth + polyStore.backgroundCellSize * 2) / polyStore.backgroundCellSize) + 2),
+      maxRows: Math.ceil((img.naturalHeight + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865))
+    });
   }
 
   setImageDataToStore(img: HTMLImageElement) {
@@ -136,9 +140,7 @@ export default class Display extends Vue {
   }
 
   makeVertex({ offsetX, offsetY }: MouseEvent, canvas: HTMLCanvasElement) {
-    let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY })
-
-    // this.snap = polyStore.vertices.getSnapPoint({ x: offsetX, y: offsetY });
+    let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY });
     if (this.snap) {
       x = this.snap.x;
       y = this.snap.y;
@@ -202,7 +204,6 @@ export default class Display extends Vue {
     const guideColor = Vue.prototype.$getComplementaryColorFromCoordinate({ x: offsetX, y: offsetY }, canvasStore.imageCopy, imageStore.image);
 
     let { x, y } = this.mousePositionScaleFix({ x: offsetX, y: offsetY });
-    // this.snap = polyStore.vertices.getSnapPoint({ x, y });
     if (this.snap) {
       x = this.snap.x;
       y = this.snap.y;
@@ -232,6 +233,7 @@ export default class Display extends Vue {
     }
 
     if (this.pointedFace) {
+      console.log(this.pointedFace);
       Vue.prototype.$displayFaceBorder({
         context,
         width: canvasStore.guideCanvas.width,

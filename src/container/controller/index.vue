@@ -74,7 +74,7 @@
             max="200"
           />
         </label>
-        <b-button class="button">Auto Populate</b-button>
+        <b-button class="button" @click="handleAutoPopulate">Auto Populate</b-button>
       </fieldset>
     </section>
 
@@ -92,7 +92,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import imageStore from '@/store/imageStore';
 import { AppTitle } from '@/components';
-import { Face } from '@/models/interfaces';
+import { Face, Vertex, ColorData } from '@/models/interfaces';
 import canvasStore from '../../store/canvasStore';
 import polyStore from '@/store/polyStore';
 
@@ -178,11 +178,52 @@ export default class Controller extends Vue {
     }
   }
 
+  handleAutoPopulate() {
+    const {
+      vertices,
+      maxCols,
+      maxRows,
+      backgroundVariance,
+      backgroundCellSize
+    } = polyStore;
+    const backgroundNodes = Vue.prototype.$autoPopulate({ maxCols, maxRows }, backgroundVariance, backgroundCellSize);
+    for (let i = 0; i < backgroundNodes.length; i++) {
+      if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
+        const v1: Vertex = this.snapChecker(backgroundNodes[i]);
+        let v2: Vertex = this.snapChecker(backgroundNodes[i + maxCols]);
+        if (v2.next.length) {
+          v2 = Object.assign(v2, {next: []});
+        }
+        const v3: Vertex = this.snapChecker(backgroundNodes[i + maxCols + 1]);
+        v1.next.push(v2, v3);
+        v2.next.push(v1, v3);
+        v3.next.push(v1, v2);
+        polyStore.addVertex(v1);
+        polyStore.addVertex(v2);
+        polyStore.addVertex(v3);
+        const color: ColorData = Vue.prototype.$getColorAverage([v1, v2, v3], canvasStore.imageCopy, canvasStore.backgroundCanvas);
+        const newFace: Face = {
+          faceId: polyStore.faces.length || 0,
+          color: Vue.prototype.$stringifyColorData(color),
+          vertices: [v1, v2, v3],
+        };
+        polyStore.addFace(newFace);
+        Vue.prototype.$makeFaceOnCanvas(newFace, canvasStore.polyCanvas);
+      }
+    }
+  }
+
+  snapChecker(vertex: Vertex): Vertex {
+    const snap: Vertex = polyStore.vertices.getSnapPoint(vertex);
+    if (snap) {
+      vertex.x = snap.x;
+      vertex.y = snap.y;
+    }
+    return vertex;
+  }
+
   @Watch('backgroundVisible')
   onBackgroundVisibleChanged(value: boolean) {
-    // value
-    //   ? Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity)
-    //   : Vue.prototype.$fillBackgroundColor(this.$refs.backgroundColor.value, canvasStore.backgroundCanvas);
     if (value) {
       Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity);
     } else {
