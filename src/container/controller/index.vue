@@ -1,25 +1,6 @@
 <template>
-  <div class="controller">
+  <div class="controller" @change="handleInputChange">
     <app-title className="controller__title"/>
-
-    <section v-if="selectedFace" class="controller__section">
-      <fieldset>
-        <legend class="controller__section_selected-face">Selected Face</legend>
-        <div class="input_wrap">
-          <input type="color"
-            :value="$hexColorFormatter(selectedFace.color)"
-            @change="handleColorChange"
-          />
-        </div>
-        <div class="text_wrap">
-          <p>{{$hexColorFormatter(selectedFace.color)}}</p>
-          <p>{{selectedFace.color}}</p>
-        </div>
-        <b-button class="button" @click="handleDeselectFace">Deselect</b-button>
-        <b-button class="button">Get Color from Image</b-button>
-        <b-button class="button danger" @click="handleDelete">Delete Face</b-button>
-      </fieldset>
-    </section>
 
     <section class="controller__section">
       <fieldset>
@@ -35,7 +16,6 @@
             max="1"
             step="0.1"
             :value="backgroundOpacity"
-            @change="handleOpacityChange"
           />
         </label>
         <label for="backgroundColor">
@@ -46,10 +26,30 @@
               type="color"
               value="black"
               ref="backgroundColor"
-              @change="handleSelectBackgroundColor"
+              name="backgroundColor"
             />
           </div>
         </label>
+      </fieldset>
+    </section>
+
+    <section  v-if="selectedFace" class="controller__section">
+      <fieldset>
+        <legend class="controller__section_selected-face">Selected Face</legend>
+        <div class="input_wrap">
+          <input
+            type="color"
+            :value="$hexColorFormatter(selectedFace.color)"
+            name="selectedFaceColor"
+          />
+        </div>
+        <div class="text_wrap">
+          <p>{{$hexColorFormatter(selectedFace.color)}}</p>
+          <p>{{selectedFace.color}}</p>
+        </div>
+        <b-button class="button" @click="handleDeselectFace">Deselect</b-button>
+        <b-button class="button">Get Color from Image</b-button>
+        <b-button class="button danger" @click="handleDelete">Delete Face</b-button>
       </fieldset>
     </section>
 
@@ -59,7 +59,8 @@
         <label for="variance">Variance
           <input
             type="range"
-            id="variance"  
+            id="variance"
+            name="variance"
             step="0.01"
             min="0"
             max="1"
@@ -69,6 +70,7 @@
           <input
             type="range"
             id="cellsize"
+            name="cellsize"
             step="2"
             min="10"
             max="200"
@@ -118,20 +120,20 @@ export default class Controller extends Vue {
     polyStore.toggleBackgroundVisible(value);
   }
 
-  handleColorChange({ target }: {target: HTMLInputElement}) {
-    const color = Vue.prototype.$rgbColorFormatter(target.value);
+  handleColorChange(value: string) {
+    const color = Vue.prototype.$rgbColorFormatter(value);
     polyStore.changeFaceColor(color);
     Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
   }
 
-  handleOpacityChange({ target }: {target: HTMLInputElement}) {
-    this.backgroundOpacity = Number(target.value);
+  handleOpacityChange(value: string) {
+    this.backgroundOpacity = Number(value);
     Vue.prototype.$fillBackgroundColor(this.$refs.backgroundColor.value, canvasStore.backgroundCanvas);
     Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity);
   }
 
-  handleSelectBackgroundColor({ target }: {target: HTMLInputElement}) {
-    const color = Vue.prototype.$rgbColorFormatter(target.value);
+  handleSelectBackgroundColor(value: string) {
+    const color = Vue.prototype.$rgbColorFormatter(value);
     Vue.prototype.$clearCanvas(canvasStore.backgroundCanvas);
     Vue.prototype.$fillBackgroundColor(color, canvasStore.backgroundCanvas);
     Vue.prototype.$drawBackgroundImage(undefined, canvasStore.backgroundCanvas, this.backgroundOpacity);
@@ -172,9 +174,8 @@ export default class Controller extends Vue {
         return;
       case 'Delete':
         this.handleDelete();
-        return;
+
       default:
-        return;
     }
   }
 
@@ -184,7 +185,7 @@ export default class Controller extends Vue {
       maxCols,
       maxRows,
       backgroundVariance,
-      backgroundCellSize
+      backgroundCellSize,
     } = polyStore;
     const backgroundNodes = Vue.prototype.$autoPopulate({ maxCols, maxRows }, backgroundVariance, backgroundCellSize);
     for (let i = 0; i < backgroundNodes.length; i++) {
@@ -192,7 +193,7 @@ export default class Controller extends Vue {
         const v1: Vertex = this.snapChecker(backgroundNodes[i]);
         let v2: Vertex = this.snapChecker(backgroundNodes[i + maxCols]);
         if (v2.next.length) {
-          v2 = Object.assign(v2, {next: []});
+          v2 = Object.assign(v2, { next: [] });
         }
         const v3: Vertex = this.snapChecker(backgroundNodes[i + maxCols + 1]);
         v1.next.push(v2, v3);
@@ -220,6 +221,28 @@ export default class Controller extends Vue {
       vertex.y = snap.y;
     }
     return vertex;
+  }
+
+  handleInputChange({ target }: { target: HTMLInputElement }) {
+    const { value, name }: { value: string, name: string } = target;
+    switch (name) {
+      case 'opacity':
+        this.handleOpacityChange(value);
+        return;
+      case 'backgroundColor':
+        this.handleSelectBackgroundColor(value);
+        return;
+      case 'selectedFaceColor':
+        this.handleColorChange(value);
+        return;
+      case 'variance':
+        polyStore.setVariance(value);
+        return;
+      case 'cellsize':
+        polyStore.setCellsize(value);
+
+      default:
+    }
   }
 
   @Watch('backgroundVisible')

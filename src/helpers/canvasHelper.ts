@@ -26,7 +26,7 @@ const canvasHelper = {
       context.fillStyle = color;
       context.fillRect(0, 0, canvas.width, canvas.height);
       context.restore();
-    }
+    };
 
     vue.prototype.$makeVertexOnCanvas = ({ x, y }: MousePosition) => {
       vue.vertexStack.push({ x, y });
@@ -240,18 +240,18 @@ const canvasHelper = {
       const backgroundVertexNode: Vertex[] = [];
       let row = 0;
       let col = 0;
-      let { maxCols, maxRows } = maximum;
-      let amount: number = maxCols * maxRows;
+      const { maxCols, maxRows } = maximum;
+      const amount: number = maxCols * maxRows;
       for (let i = 0; i < amount; i++) {
-        let vertex = <Vertex>{};
+        const vertex = <Vertex>{};
         if (row % 2 === 0) {
           vertex.x = (col * cellsize) - cellsize;
         } else {
           vertex.x = (col * cellsize) - cellsize - cellsize / 2;
         }
-        vertex.x = vertex.x + (Math.random() - 0.5) * variance * cellsize * 2;
+        vertex.x += (Math.random() - 0.5) * variance * cellsize * 2;
         vertex.y = (row * cellsize * 0.865) - cellsize;
-        vertex.y = vertex.y + (Math.random() - 0.5) * variance * cellsize * 2;
+        vertex.y += (Math.random() - 0.5) * variance * cellsize * 2;
         vertex.col = col;
         vertex.row = row;
         vertex.next = [];
@@ -263,13 +263,13 @@ const canvasHelper = {
         }
       }
       return backgroundVertexNode;
-    }
+    };
 
     vue.prototype.$somethingBackground = (vertices: Vertex[], maxCols: number) => {
       for (let i = 0; i < vertices.length; i++) {
 
       }
-    }
+    };
   },
 };
 

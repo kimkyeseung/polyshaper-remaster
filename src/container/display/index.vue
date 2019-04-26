@@ -233,7 +233,6 @@ export default class Display extends Vue {
     }
 
     if (this.pointedFace) {
-      console.log(this.pointedFace);
       Vue.prototype.$displayFaceBorder({
         context,
         width: canvasStore.guideCanvas.width,

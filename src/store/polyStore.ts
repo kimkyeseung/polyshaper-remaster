@@ -58,9 +58,7 @@ class PolyStore extends VuexModule {
 
   @Mutation
   popFace(face: Face) {
-    const faceIndex = this.faces.findIndex(faceTarget => {
-      return faceTarget === face;
-    });
+    const faceIndex: number = this.faces.findIndex(faceTarget => faceTarget === face);
     this.faces.splice(faceIndex, 1);
   }
 
@@ -73,6 +71,16 @@ class PolyStore extends VuexModule {
   updateMaximum({ maxCols, maxRows }: { maxCols: number, maxRows: number }) {
     this.maxCols = maxCols;
     this.maxRows = maxRows;
+  }
+
+  @Mutation
+  updateVariance(variance: number) {
+    this.backgroundVariance = variance;
+  }
+
+  @Mutation
+  updateCellsize(cellsize: number) {
+    this.backgroundCellSize = cellsize;
   }
 
   @Action
@@ -104,7 +112,7 @@ class PolyStore extends VuexModule {
   }
 
   @Action
-  changeFaceColor(color) {
+  changeFaceColor(color: string) {
     this.selectedFace.color = color;
     this.context.commit('updateSelectedFace', this.selectedFace);
   }
@@ -122,6 +130,16 @@ class PolyStore extends VuexModule {
   @Action
   setMaximum(maximum: { maxCols: number, maxRows: number }) {
     this.context.commit('updateMaximum', maximum);
+  }
+
+  @Action
+  setVariance(variance: string) {
+    this.context.commit('updateVariance', variance);
+  }
+
+  @Action
+  setCellsize(cellsize: string) {
+    this.context.commit('updateCellsize', cellsize);
   }
 }
 
