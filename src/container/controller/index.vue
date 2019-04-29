@@ -188,28 +188,46 @@ export default class Controller extends Vue {
       backgroundCellSize,
     } = polyStore;
     const backgroundNodes = Vue.prototype.$autoPopulate({ maxCols, maxRows }, backgroundVariance, backgroundCellSize);
+
+    function populate(v1: Vertex, v2: Vertex, v3: Vertex) {
+      v1.next.push(v2, v3);
+      v2.next.push(v1, v3);
+      v3.next.push(v1, v2);
+      polyStore.addVertex(v1);
+      polyStore.addVertex(v2);
+      polyStore.addVertex(v3);
+      const color: ColorData = Vue.prototype.$getColorAverage([v1, v2, v3], canvasStore.imageCopy, canvasStore.backgroundCanvas);
+      const newFace: Face = {
+        faceId: polyStore.faces.length || 0,
+        color: Vue.prototype.$stringifyColorData(color),
+        vertices: [v1, v2, v3],
+      };
+      polyStore.addFace(newFace);
+      Vue.prototype.$makeFaceOnCanvas(newFace, canvasStore.polyCanvas);
+    }
+
     for (let i = 0; i < backgroundNodes.length; i++) {
       if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
-        const v1: Vertex = this.snapChecker(backgroundNodes[i]);
-        let v2: Vertex = this.snapChecker(backgroundNodes[i + maxCols]);
-        if (v2.next.length) {
-          v2 = Object.assign(v2, { next: [] });
-        }
-        const v3: Vertex = this.snapChecker(backgroundNodes[i + maxCols + 1]);
-        v1.next.push(v2, v3);
-        v2.next.push(v1, v3);
-        v3.next.push(v1, v2);
-        polyStore.addVertex(v1);
-        polyStore.addVertex(v2);
-        polyStore.addVertex(v3);
-        const color: ColorData = Vue.prototype.$getColorAverage([v1, v2, v3], canvasStore.imageCopy, canvasStore.backgroundCanvas);
-        const newFace: Face = {
-          faceId: polyStore.faces.length || 0,
-          color: Vue.prototype.$stringifyColorData(color),
-          vertices: [v1, v2, v3],
-        };
-        polyStore.addFace(newFace);
-        Vue.prototype.$makeFaceOnCanvas(newFace, canvasStore.polyCanvas);
+        const v1: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v2: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
+        const v3: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+        populate(v1, v2, v3);
+
+        const v4: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v5: Vertex = {...this.snapChecker(backgroundNodes[i + 1]), next: []};
+        const v6: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+        populate(v4, v5, v6);
+        
+      } else if (backgroundNodes[i - 1] && backgroundNodes[i + maxCols] && backgroundNodes[i].col > 0) {
+        const v7: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v8: Vertex = {...this.snapChecker(backgroundNodes[i - 1]), next: []};
+        const v9: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+        populate(v7, v8, v9);
+
+        const v10: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v11: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
+        const v12: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+        populate(v10, v11, v12);
       }
     }
   }
@@ -240,8 +258,9 @@ export default class Controller extends Vue {
         return;
       case 'cellsize':
         polyStore.setCellsize(value);
-
+        return;
       default:
+        return;
     }
   }
 
