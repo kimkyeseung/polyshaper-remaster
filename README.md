@@ -1,5 +1,10 @@
-# [Polyshaper Remaster](https://polyshaper.me/)
+# [Polyshaper Remaster](https://kimkyeseung.github.io/polyshaper-remaster/)
 폴리셰이퍼 리마스터
+
+![polyshaper-remaster](./public/image01.jpg)
+
+## Tryout
+<https://kimkyeseung.github.io/polyshaper-remaster/>
 
 ## Introduction
 기존의 [폴리셰이퍼](https://github.com/kimkyeseung/polyshaper)의 단점을 보완하고 몇 가지 버그를 없앴습니다. 
@@ -48,11 +53,5 @@
 - Vuex를 이용하여 Flux 아키텍처 기반 설계를 하였습니다.
 - HTML5 Canvas를 이용하여 그래픽 아트웍을 구현하였습니다.
 
-## Continuous Integration
-- 소스관리/빌드/테스트/배포의 지속적인 통합을 위한 CircleCI를 사용하였습니다.
-
 ## Deployment
-netlify를 이용하여 github repository를 배포하였습니다.
-
-## Version Control
-- Client, Server의 GIT Repoitory를 구분하여 독립적인 관리를 하였습니다.
+gh-pages를 이용하여 github repository를 배포하였습니다.
