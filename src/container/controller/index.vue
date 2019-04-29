@@ -6,7 +6,19 @@
     <section class="controller__section">
       <fieldset>
         <legend class="controller__section_background">Background</legend>
-        <b-form-checkbox v-model="backgroundVisible" switch>Background Image</b-form-checkbox>
+          <label for="backgroundVisible">
+            Background Image
+            <div class="backgroundVisible-wrap">
+              <input
+                type="checkbox"
+                v-model="backgroundVisible"
+                id="backgroundVisible"
+                class="backgroundVisible"
+                switch
+              />
+              <span class="backgroundVisible-slider"></span>
+            </div>
+          </label>
         <label for="opacity" v-if="backgroundVisible">
           Opacity: {{backgroundOpacity}}
           <input
@@ -22,6 +34,7 @@
         <label for="backgroundColor">
           Fill Background
           <div class="input_wrap">
+            <v-icon name="edit"></v-icon>
             <input
               id="backgroundColor"
               type="color"
@@ -38,6 +51,7 @@
       <fieldset>
         <legend class="controller__section_selected-face">Selected Face</legend>
         <div class="input_wrap">
+          <v-icon name="edit"></v-icon>
           <input
             type="color"
             :value="$hexColorFormatter(selectedFace.color)"
