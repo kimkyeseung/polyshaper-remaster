@@ -2,6 +2,12 @@
   <div class="upload">
     <div class="upload__contents">
       <app-title className="upload__title"/>
+      <p class="upload__description">
+        Polyshaper는 이미지를 Polyart를 제작할 수 있는 웹 어플리케이션입니다.
+        이미지의 원하는 부분을 클릭해서 삼각형으로 만들면 
+        <br>
+        해당 부분의 평균색으로 면이 채워집니다.
+      </p>
       <label htmlFor="upload">
         <div
           @drop="handleDrop"
@@ -9,7 +15,8 @@
           @dragover.prevent="() => {}"
           @dragleave="handleDragLeave"
           :class="`upload__drop-zone ${hover ? 'drop-target' : ''}`">
-          <svgicon icon="file-upload-outline" width="60" height="60"></svgicon>
+          <!-- <svgicon icon="file-upload-outline" width="60" height="60"></svgicon> -->
+          <v-icon name="upload"></v-icon>
           <h2>Drop the image file here</h2>
           <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
           <p>or Select a image file</p>
@@ -19,6 +26,7 @@
     <b-modal ref="storedImageModal" @ok="uploadImageHandler(storedImage)" title="Polyshaper">
       <p>기존에 작업하던 이미지가 남아있습니다.</p>
       <p>이어서 진행하시겠습니까?</p>
+      
     </b-modal>
   </div>
 </template>

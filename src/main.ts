@@ -11,12 +11,14 @@ import '@/styles/style.scss';
 
 import VueSVGIcon from 'vue-svgicon';
 import BootstrapVue from 'bootstrap-vue';
+import icon from 'vue-icon'
 
 Vue.config.productionTip = false;
 Vue.use(VueSVGIcon);
 Vue.use(BootstrapVue);
 Vue.use(canvasHelper);
 Vue.use(utilityHelper);
+Vue.use(icon, 'v-icon');
 
 new Vue({
   router,

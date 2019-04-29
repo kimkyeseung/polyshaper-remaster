@@ -28,17 +28,30 @@
     border-radius: 12px;
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, .15);
 
+    .upload__description {
+      margin-top: 30px;
+      font: $font-contents-ko;
+      color: $color-achromatic8;
+    }
+
     .upload__drop-zone {
       width: 600px;
       height: 200px;
       background: $color-achromatic3;
       border: 4px dashed $color-achromatic4;
       border-radius: 12px;
-      margin-top: 50px;
+      margin-top: 30px;
       cursor: pointer;
 
       &:hover {
         background: $color-achromatic2;
+      }
+
+      .icon {
+        margin-top: 20px;
+        width: 80px;
+        height: 80px;
+        color: $color-achromatic4;
       }
 
       input[type="file"] {
@@ -67,4 +80,3 @@
     }
   }
 }
- 

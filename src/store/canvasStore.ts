@@ -23,7 +23,7 @@ class CanvasStore extends VuexModule {
   } = {
     width: 0,
     height: 0
-  }
+  };
 
   @Mutation
   updateCanvasElement({ canvas, canvasName }: {canvas: HTMLCanvasElement, canvasName: string}) {
