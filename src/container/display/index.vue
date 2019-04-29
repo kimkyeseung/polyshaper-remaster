@@ -51,18 +51,26 @@ import { MousePosition, Vertex, Face, ColorData } from '@/models/interfaces';
 @Component
 export default class Display extends Vue {
   private vertices: Vertex[] = [];
-  private canvasWidth: number = 0;
-  private canvasHeight: number = 0;
+  
   private scaleFixRatio: MousePosition = {
     x: 0,
     y: 0,
   };
   private pointedFace: Face = null;
+
   private snap: Vertex;
 
   public $refs!: {
     image: HTMLImageElement;
     canvasWrap: HTMLDivElement;
+  }
+
+  get canvasWidth(): number {
+    return canvasStore.canvasSize.width;
+  }
+
+  get canvasHeight(): number {
+    return canvasStore.canvasSize.height;
   }
 
   get uploadedImage(): string {
@@ -72,10 +80,6 @@ export default class Display extends Vue {
     return <string>imageStore.image;
   }
 
-  get vertextSnapGap(): number {
-    return uiStore.vertexSnapGap;
-  }
-
   handleImageLoad({ currentTarget: img }: { currentTarget: HTMLImageElement }) {
     this.getImageData(img);
     this.setImageDataToStore(img);
@@ -83,8 +87,7 @@ export default class Display extends Vue {
   }
 
   getImageData(img: HTMLImageElement) {
-    this.canvasWidth = img.naturalWidth;
-    this.canvasHeight = img.naturalHeight;
+    canvasStore.setCanvasSize({width: img.naturalWidth, height: img.naturalHeight});
     this.scaleFixRatio.x = img.naturalWidth / img.width;
     this.scaleFixRatio.y = img.naturalHeight / img.height;
     polyStore.setMaximum({

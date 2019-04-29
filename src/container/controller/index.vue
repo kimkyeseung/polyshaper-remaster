@@ -1,5 +1,6 @@
 <template>
   <div class="controller" @change="handleInputChange">
+    <div v-if="loading">loading~~~~~~</div>
     <app-title className="controller__title"/>
 
     <section class="controller__section">
@@ -72,7 +73,7 @@
             id="cellsize"
             name="cellsize"
             step="2"
-            min="10"
+            min="20"
             max="200"
           />
         </label>
@@ -107,6 +108,8 @@ export default class Controller extends Vue {
   public $refs!: {
     backgroundColor: HTMLInputElement;
   }
+
+  public loading: boolean = false;
 
   get selectedFace(): Face {
     return polyStore.selectedFace;
@@ -180,6 +183,8 @@ export default class Controller extends Vue {
   }
 
   handleAutoPopulate() {
+    this.loading = true;
+
     const {
       vertices,
       maxCols,
@@ -206,30 +211,33 @@ export default class Controller extends Vue {
       Vue.prototype.$makeFaceOnCanvas(newFace, canvasStore.polyCanvas);
     }
 
-    for (let i = 0; i < backgroundNodes.length; i++) {
-      if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
-        const v1: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v2: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
-        const v3: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
-        populate(v1, v2, v3);
-
-        const v4: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v5: Vertex = {...this.snapChecker(backgroundNodes[i + 1]), next: []};
-        const v6: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
-        populate(v4, v5, v6);
-        
-      } else if (backgroundNodes[i - 1] && backgroundNodes[i + maxCols] && backgroundNodes[i].col > 0) {
-        const v7: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v8: Vertex = {...this.snapChecker(backgroundNodes[i - 1]), next: []};
-        const v9: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
-        populate(v7, v8, v9);
-
-        const v10: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v11: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
-        const v12: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
-        populate(v10, v11, v12);
+    setTimeout(() => {
+      for (let i = 0; i < backgroundNodes.length; i++) {
+        if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
+          const v1: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+          const v2: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
+          const v3: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+          populate(v1, v2, v3);
+  
+          const v4: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+          const v5: Vertex = {...this.snapChecker(backgroundNodes[i + 1]), next: []};
+          const v6: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+          populate(v4, v5, v6);
+          
+        } else if (backgroundNodes[i - 1] && backgroundNodes[i + maxCols] && backgroundNodes[i].col > 0) {
+          const v7: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+          const v8: Vertex = {...this.snapChecker(backgroundNodes[i - 1]), next: []};
+          const v9: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+          populate(v7, v8, v9);
+  
+          const v10: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+          const v11: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
+          const v12: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+          populate(v10, v11, v12);
+        }
       }
-    }
+      this.loading = false;
+    }, 0);
   }
 
   snapChecker(vertex: Vertex): Vertex {
@@ -255,9 +263,17 @@ export default class Controller extends Vue {
         return;
       case 'variance':
         polyStore.setVariance(value);
+        polyStore.setMaximum({
+          maxCols: Math.ceil(((canvasStore.canvasSize.width + polyStore.backgroundCellSize * 2) / polyStore.backgroundCellSize) + 2),
+          maxRows: Math.ceil((canvasStore.canvasSize.height + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865))
+        });
         return;
       case 'cellsize':
         polyStore.setCellsize(value);
+        polyStore.setMaximum({
+          maxCols: Math.ceil(((canvasStore.canvasSize.width + polyStore.backgroundCellSize * 2) / polyStore.backgroundCellSize) + 2),
+          maxRows: Math.ceil((canvasStore.canvasSize.height + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865))
+        });
         return;
       default:
         return;
