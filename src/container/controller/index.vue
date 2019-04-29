@@ -6,21 +6,20 @@
     <section class="controller__section">
       <fieldset>
         <legend class="controller__section_background">Background</legend>
-          <label for="backgroundVisible">
-            Background Image
-            <div class="backgroundVisible-wrap">
-              <input
-                type="checkbox"
-                v-model="backgroundVisible"
-                id="backgroundVisible"
-                class="backgroundVisible"
-                switch
-              />
-              <span class="backgroundVisible-slider"></span>
-            </div>
-          </label>
+        <label for="backgroundVisible">
+          Background Image
+          <div class="backgroundVisible-wrap">
+            <input
+              type="checkbox"
+              v-model="backgroundVisible"
+              id="backgroundVisible"
+              class="backgroundVisible switch"
+            />
+            <span class="switch-slider"></span>
+          </div>
+        </label>
         <label for="opacity" v-if="backgroundVisible">
-          Opacity: {{backgroundOpacity}}
+          <p>Opacity: <span>{{backgroundOpacity}}</span></p>
           <input
             type="range"
             name="opacity"
@@ -32,7 +31,7 @@
           />
         </label>
         <label for="backgroundColor">
-          Fill Background
+          <p class="input_color-text">Fill Background</p>
           <div class="input_wrap">
             <v-icon name="edit"></v-icon>
             <input
@@ -49,19 +48,20 @@
 
     <section  v-if="selectedFace" class="controller__section">
       <fieldset>
-        <legend class="controller__section_selected-face">Selected Face</legend>
-        <div class="input_wrap">
-          <v-icon name="edit"></v-icon>
-          <input
-            type="color"
-            :value="$hexColorFormatter(selectedFace.color)"
-            name="selectedFaceColor"
-          />
-        </div>
-        <div class="text_wrap">
+        <legend>Selected Face</legend>
+        <label class="controller__section_selected-face">
+          <div class="input_wrap">
+            <v-icon name="edit"></v-icon>
+            <input
+              type="color"
+              :value="$hexColorFormatter(selectedFace.color)"
+              name="selectedFaceColor"
+              id="selectedFaceColor"
+            />
+          </div>
           <p>{{$hexColorFormatter(selectedFace.color)}}</p>
           <p>{{selectedFace.color}}</p>
-        </div>
+        </label>
         <b-button class="button" @click="handleDeselectFace">Deselect</b-button>
         <b-button class="button">Get Color from Image</b-button>
         <b-button class="button danger" @click="handleDelete">Delete Face</b-button>
@@ -71,7 +71,8 @@
     <section class="controller__section">
       <fieldset>
         <legend class="controller__section_auto-populate">Auto Populate</legend>
-        <label for="variance">Variance
+        <label for="variance">
+          <p>Variance <span>{{variance}}</span></p>
           <input
             type="range"
             id="variance"
@@ -81,7 +82,9 @@
             max="1"
           />
         </label>
-        <label for="cellsize">Cellsize
+        <label for="cellsize">
+          <p>Cellsize <span>{{cellsize}}</span></p>
+          
           <input
             type="range"
             id="cellsize"
@@ -135,6 +138,14 @@ export default class Controller extends Vue {
 
   set backgroundVisible(value: boolean) {
     polyStore.toggleBackgroundVisible(value);
+  }
+
+  get variance(): number {
+    return polyStore.backgroundVariance; 
+  }
+
+  get cellsize(): number {
+    return polyStore.backgroundCellSize;
   }
 
   handleColorChange(value: string) {

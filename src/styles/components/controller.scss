@@ -19,7 +19,7 @@
   }
 
   .controller__section {
-    padding: 20px;
+    padding: 12px 20px;
     fieldset {
       text-align: left;
       legend {
@@ -30,7 +30,19 @@
       label {
         display: flex;
         justify-content: space-between;
-        padding: 2px 0;
+        padding: 4px 0;
+        p {
+          line-height: 16px;
+          span {
+            font-size: 18px;
+            color: $color-main;
+          }
+        }
+
+        .input_color-text {
+          line-height: 40px;
+        }
+
         .backgroundVisible-wrap {
           position: relative;
           display: inline-block;
@@ -40,7 +52,7 @@
             opacity: 0;
             width: 0;
             height: 0;
-            &:checked + .backgroundVisible-slider {
+            &:checked + .switch-slider {
               background-color: $color-main;
               &:before {
                 -webkit-transform: translateX(11px);
@@ -49,7 +61,7 @@
               }
             }
           }
-          .backgroundVisible-slider {
+          .switch-slider {
             position: absolute;
             cursor: pointer;
             top: 0;
@@ -78,32 +90,39 @@
 
       .input_wrap {
         display: inline-block;
-        width: 64px;
-        height: 64px;
+        width: 40px;
+        height: 40px;
         border-radius: 100%;
         overflow: hidden;
         position: relative;
         .icon {
-          width: 24px;
-          height: 24px;
+          width: 16px;
+          height: 16px;
           position: absolute;
           top: 50%;
-          margin-top: -12px;
+          margin-top: -8px;
           left: 50%;
-          margin-left: -12px;
+          margin-left: -8px;
           opacity: .5;
           cursor: pointer;
         }
       }
 
-      .text_wrap {
-        display: inline-block;
-        vertical-align: top;
-        margin-left: 20px;
-        margin-top: 4px;
-        p {
-          font: $font-contents-en;
-        }
+    }
+
+    .controller__section_selected-face {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+
+      .input_wrap {
+        margin-right: 20px;
+      }
+
+      p {
+        font: $font-contents-en;
+        line-height: 40px;
+        font-size: 16px;
       }
     }
   }

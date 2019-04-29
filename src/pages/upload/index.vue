@@ -15,7 +15,6 @@
           @dragover.prevent="() => {}"
           @dragleave="handleDragLeave"
           :class="`upload__drop-zone ${hover ? 'drop-target' : ''}`">
-          <!-- <svgicon icon="file-upload-outline" width="60" height="60"></svgicon> -->
           <v-icon name="upload"></v-icon>
           <h2>Drop the image file here</h2>
           <input type="file" name="upload" id="upload" @change="imageFileValidater"/>
