@@ -210,17 +210,6 @@ const canvasHelper = {
     vue.snapGuide;
 
     vue.prototype.$drawSnapGuide = ({ x, y }: Vertex, { context, width, height }: { context: CanvasRenderingContext2D, width: number, height: number }) => {
-      // function snapMotion(time) {
-      //   context.clearRect(0, 0, width, height);
-      //   let start: number = time % 1000;
-      //   context.beginPath();
-      //   context.arc(x, y, start / 100, 0, Math.PI * 2);
-      //   context.fillStyle = `rgba(0, 0, 0, ${100 / start})`;
-      //   context.fill();
-      //   context.closePath();
-      //   vue.snapGuide = window.requestAnimationFrame(snapMotion);
-      // }
-      // window.requestAnimationFrame(snapMotion);
       context.save();
       context.clearRect(0, 0, width, height);
       context.beginPath();
@@ -263,12 +252,6 @@ const canvasHelper = {
         }
       }
       return backgroundVertexNode;
-    };
-
-    vue.prototype.$somethingBackground = (vertices: Vertex[], maxCols: number) => {
-      for (let i = 0; i < vertices.length; i++) {
-
-      }
     };
   },
 };

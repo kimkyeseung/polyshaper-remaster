@@ -31,7 +31,7 @@
           />
         </label>
         <label for="backgroundColor">
-          <p class="input_color-text">Fill Background</p>
+          <p class="input_color-text">Fill Background Color</p>
           <div class="input_wrap">
             <v-icon name="edit"></v-icon>
             <input
@@ -202,14 +202,14 @@ export default class Controller extends Vue {
         return;
       case 'Delete':
         this.handleDelete();
-
+        return;
       default:
+        return;
     }
   }
 
   handleAutoPopulate() {
-    this.loading = true;
-
+    polyStore.initPoly();
     const {
       vertices,
       maxCols,
@@ -236,33 +236,30 @@ export default class Controller extends Vue {
       Vue.prototype.$makeFaceOnCanvas(newFace, canvasStore.polyCanvas);
     }
 
-    setTimeout(() => {
-      for (let i = 0; i < backgroundNodes.length; i++) {
-        if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
-          const v1: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-          const v2: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
-          const v3: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
-          populate(v1, v2, v3);
-  
-          const v4: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-          const v5: Vertex = {...this.snapChecker(backgroundNodes[i + 1]), next: []};
-          const v6: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
-          populate(v4, v5, v6);
-          
-        } else if (backgroundNodes[i - 1] && backgroundNodes[i + maxCols] && backgroundNodes[i].col > 0) {
-          const v7: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-          const v8: Vertex = {...this.snapChecker(backgroundNodes[i - 1]), next: []};
-          const v9: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
-          populate(v7, v8, v9);
-  
-          const v10: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-          const v11: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
-          const v12: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
-          populate(v10, v11, v12);
-        }
+    for (let i = 0; i < backgroundNodes.length; i++) {
+      if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
+        const v1: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v2: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
+        const v3: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+        populate(v1, v2, v3);
+
+        const v4: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v5: Vertex = {...this.snapChecker(backgroundNodes[i + 1]), next: []};
+        const v6: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+        populate(v4, v5, v6);
+        
+      } else if (backgroundNodes[i - 1] && backgroundNodes[i + maxCols] && backgroundNodes[i].col > 0) {
+        const v7: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v8: Vertex = {...this.snapChecker(backgroundNodes[i - 1]), next: []};
+        const v9: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+        populate(v7, v8, v9);
+
+        const v10: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
+        const v11: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
+        const v12: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+        populate(v10, v11, v12);
       }
-      this.loading = false;
-    }, 0);
+    }
   }
 
   snapChecker(vertex: Vertex): Vertex {

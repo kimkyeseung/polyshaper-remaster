@@ -83,6 +83,7 @@ class PolyStore extends VuexModule {
     this.backgroundCellSize = cellsize;
   }
 
+
   @Action
   addVertex(vertex: Vertex) {
     this.context.commit('pushVertex', vertex);
@@ -140,6 +141,11 @@ class PolyStore extends VuexModule {
   @Action
   setCellsize(cellsize: string) {
     this.context.commit('updateCellsize', cellsize);
+  }
+
+  @Action
+  initPoly() {
+    this.context.commit('initializeState');
   }
 }
 
