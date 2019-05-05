@@ -64,12 +64,13 @@ export default class Upload extends Vue {
     if (fileExtension === 'png' || fileExtension === 'bmp' || fileExtension === 'jpeg' || fileExtension === 'jpg') {
       if (uploadedImageFile && file) {
         const fileSize = file.size;
-        if (fileSize > 10485760) {
-          alert('10MB 이상의 이미지는 업로드 불가합니다.');
+        if (fileSize > 380000) {
+          alert('4MB 이상의 이미지는 업로드 불가합니다.');
           this.uploadImageHandler();
+        } else {
+          this.uploadImageHandler(uploadedImageFile);
         }
       }
-      this.uploadImageHandler(uploadedImageFile);
     } else {
       alert('jpg, png 파일만 업로드 할 수 있습니다.');
       this.uploadImageHandler();
