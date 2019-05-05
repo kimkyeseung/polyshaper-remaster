@@ -1,15 +1,15 @@
-@import './generic/font.scss';
-@import './generic/reset.scss';
-@import './generic/color.scss';
-@import './generic//ui.scss';
+@import './generic/font';
+@import './generic/reset';
+@import './generic/color';
+@import './generic/ui';
 
-@import './pages/upload.scss';
-@import './pages/poly-edit.scss';
+@import './pages/upload';
+@import './pages/poly-edit';
 
-@import './components/app-title.scss';
-@import './components/controller.scss';
-@import './components/display.scss';
-@import './components/app.scss';
+@import './components/app-title';
+@import './components/controller';
+@import './components/display';
+@import './components/app';
 
 body {
   background: $color-achromatic9;
