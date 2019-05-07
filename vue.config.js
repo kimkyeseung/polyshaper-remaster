@@ -1,4 +1,4 @@
 module.exports = {
   outputDir: 'dist',
-  publicPath: '/polyshaper-remaster/'
+  publicPath: '/polyshaper-remaster/',
 };

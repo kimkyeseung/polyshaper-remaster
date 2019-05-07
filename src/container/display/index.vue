@@ -30,6 +30,11 @@
         name="background"
         :width="canvasWidth"
         :height="canvasHeight"/>
+      <canvas
+        name="flatten"
+        v-show="false"
+        :width="canvasWidth"
+        :height="canvasHeight"/>
       <img
         :src="uploadedImage"
         alt="user uploaded image"
@@ -264,6 +269,7 @@ export default class Display extends Vue {
     canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('guide'), canvasName: 'guideCanvas' });
     canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('poly'), canvasName: 'polyCanvas'});
     canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('background'), canvasName: 'backgroundCanvas'});
+    canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('flatten'), canvasName: 'flattenCanvas'});
     canvasStore.mountCanvasElement({ canvas: <HTMLCanvasElement>this.$refs.canvasWrap.children.namedItem('imageCopy'), canvasName: 'imageCopy'});
   }
 }

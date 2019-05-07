@@ -84,7 +84,7 @@
         </label>
         <label for="cellsize">
           <p>Cellsize <span>{{cellsize}}</span></p>
-          
+
           <input
             type="range"
             id="cellsize"
@@ -102,7 +102,7 @@
       <fieldset>
         <legend class="controller__section_image">Image</legend>
         <b-button class="button" @click="handleImageReset">Image Reset</b-button>
-        <b-button class="button">Download Image</b-button>
+        <b-button class="button" @click="handleDownloadClick">Download Image</b-button>
       </fieldset>
     </section>
   </div>
@@ -141,7 +141,7 @@ export default class Controller extends Vue {
   }
 
   get variance(): number {
-    return polyStore.backgroundVariance; 
+    return polyStore.backgroundVariance;
   }
 
   get cellsize(): number {
@@ -202,9 +202,8 @@ export default class Controller extends Vue {
         return;
       case 'Delete':
         this.handleDelete();
-        return;
+
       default:
-        return;
     }
   }
 
@@ -238,25 +237,24 @@ export default class Controller extends Vue {
 
     for (let i = 0; i < backgroundNodes.length; i++) {
       if (backgroundNodes[i].row % 2 === 0 && backgroundNodes[i + maxCols + 1] && backgroundNodes[i].col < maxCols - 1) {
-        const v1: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v2: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
-        const v3: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+        const v1: Vertex = { ...this.snapChecker(backgroundNodes[i]), next: [] };
+        const v2: Vertex = { ...this.snapChecker(backgroundNodes[i + maxCols]), next: [] };
+        const v3: Vertex = { ...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: [] };
         populate(v1, v2, v3);
 
-        const v4: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v5: Vertex = {...this.snapChecker(backgroundNodes[i + 1]), next: []};
-        const v6: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: []};
+        const v4: Vertex = { ...this.snapChecker(backgroundNodes[i]), next: [] };
+        const v5: Vertex = { ...this.snapChecker(backgroundNodes[i + 1]), next: [] };
+        const v6: Vertex = { ...this.snapChecker(backgroundNodes[i + maxCols + 1]), next: [] };
         populate(v4, v5, v6);
-        
       } else if (backgroundNodes[i - 1] && backgroundNodes[i + maxCols] && backgroundNodes[i].col > 0) {
-        const v7: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v8: Vertex = {...this.snapChecker(backgroundNodes[i - 1]), next: []};
-        const v9: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+        const v7: Vertex = { ...this.snapChecker(backgroundNodes[i]), next: [] };
+        const v8: Vertex = { ...this.snapChecker(backgroundNodes[i - 1]), next: [] };
+        const v9: Vertex = { ...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: [] };
         populate(v7, v8, v9);
 
-        const v10: Vertex = {...this.snapChecker(backgroundNodes[i]), next: []};
-        const v11: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols]), next: []};
-        const v12: Vertex = {...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: []};
+        const v10: Vertex = { ...this.snapChecker(backgroundNodes[i]), next: [] };
+        const v11: Vertex = { ...this.snapChecker(backgroundNodes[i + maxCols]), next: [] };
+        const v12: Vertex = { ...this.snapChecker(backgroundNodes[i + maxCols - 1]), next: [] };
         populate(v10, v11, v12);
       }
     }
@@ -287,19 +285,26 @@ export default class Controller extends Vue {
         polyStore.setVariance(value);
         polyStore.setMaximum({
           maxCols: Math.ceil(((canvasStore.canvasSize.width + polyStore.backgroundCellSize * 2) / polyStore.backgroundCellSize) + 2),
-          maxRows: Math.ceil((canvasStore.canvasSize.height + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865))
+          maxRows: Math.ceil((canvasStore.canvasSize.height + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865)),
         });
         return;
       case 'cellsize':
         polyStore.setCellsize(value);
         polyStore.setMaximum({
           maxCols: Math.ceil(((canvasStore.canvasSize.width + polyStore.backgroundCellSize * 2) / polyStore.backgroundCellSize) + 2),
-          maxRows: Math.ceil((canvasStore.canvasSize.height + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865))
+          maxRows: Math.ceil((canvasStore.canvasSize.height + polyStore.backgroundCellSize * 2) / (polyStore.backgroundCellSize * 0.865)),
         });
-        return;
+
       default:
-        return;
     }
+  }
+
+  handleDownloadClick() {
+    const {
+      polyCanvas, imageCopy, backgroundCanvas, flattenCanvas,
+    } = canvasStore;
+    const drawn: HTMLCanvasElement[] = [imageCopy, backgroundCanvas, polyCanvas];
+    Vue.prototype.$flattenImage(flattenCanvas, drawn);
   }
 
   @Watch('backgroundVisible')

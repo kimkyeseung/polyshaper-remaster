@@ -11,7 +11,7 @@ import '@/styles/style.scss';
 
 import VueSVGIcon from 'vue-svgicon';
 import BootstrapVue from 'bootstrap-vue';
-import icon from 'vue-icon'
+import icon from 'vue-icon';
 
 Vue.config.productionTip = false;
 Vue.use(VueSVGIcon);

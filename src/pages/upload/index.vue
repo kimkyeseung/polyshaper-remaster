@@ -4,7 +4,7 @@
       <app-title className="upload__title"/>
       <p class="upload__description">
         Polyshaper는 이미지를 Polyart를 제작할 수 있는 웹 어플리케이션입니다.
-        이미지의 원하는 부분을 클릭해서 삼각형으로 만들면 
+        이미지의 원하는 부분을 클릭해서 삼각형으로 만들면
         <br>
         해당 부분의 평균색으로 면이 채워집니다.
       </p>
@@ -25,7 +25,7 @@
     <b-modal ref="storedImageModal" @ok="uploadImageHandler(storedImage)" title="Polyshaper">
       <p>기존에 작업하던 이미지가 남아있습니다.</p>
       <p>이어서 진행하시겠습니까?</p>
-      
+
     </b-modal>
   </div>
 </template>

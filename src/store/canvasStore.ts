@@ -17,12 +17,14 @@ class CanvasStore extends VuexModule {
 
   public backgroundCanvas: HTMLCanvasElement = null;
 
+  public flattenCanvas: HTMLCanvasElement = null;
+
   public canvasSize: {
     width: number;
     height: number;
   } = {
     width: 0,
-    height: 0
+    height: 0,
   };
 
   @Mutation
