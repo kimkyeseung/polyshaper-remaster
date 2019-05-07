@@ -1,4 +1,6 @@
 module.exports = {
   outputDir: 'dist',
-  publicPath: '/polyshaper-remaster/',
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/polyshaper-remaster/'
+    : '/',
 };
