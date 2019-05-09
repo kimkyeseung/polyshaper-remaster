@@ -254,7 +254,7 @@ const canvasHelper = {
       return backgroundVertexNode;
     };
 
-    vue.prototype.$flattenImage = (canvas: HTMLCanvasElement, images: HTMLCanvasElement[]) => {
+    vue.prototype.$flattenImage = (canvas: HTMLCanvasElement, ...images: HTMLCanvasElement[]) => {
       const context = canvas.getContext('2d');
       images.forEach((image: HTMLCanvasElement) => {
         context.drawImage(image, 0, 0, canvas.width, canvas.height);

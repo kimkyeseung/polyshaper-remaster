@@ -63,7 +63,7 @@
           <p>{{selectedFace.color}}</p>
         </label>
         <b-button class="button" @click="handleDeselectFace">Deselect</b-button>
-        <b-button class="button">Get Color from Image</b-button>
+        <b-button class="button" @click="handleGetColorFromImage">Get Color from Image</b-button>
         <b-button class="button danger" @click="handleDelete">Delete Face</b-button>
       </fieldset>
     </section>
@@ -207,6 +207,13 @@ export default class Controller extends Vue {
     }
   }
 
+  handleGetColorFromImage() {
+    const { vertices } = polyStore.selectedFace;
+    const color: ColorData = Vue.prototype.$getColorAverage(vertices, canvasStore.imageCopy, canvasStore.backgroundCanvas);
+    polyStore.changeFaceColor(Vue.prototype.$stringifyColorData(color));
+    Vue.prototype.$makeFaceOnCanvas(this.selectedFace, canvasStore.polyCanvas);
+  }
+
   handleAutoPopulate() {
     polyStore.initPoly();
     const {
@@ -303,8 +310,7 @@ export default class Controller extends Vue {
     const {
       polyCanvas, imageCopy, backgroundCanvas, flattenCanvas,
     } = canvasStore;
-    const drawn: HTMLCanvasElement[] = [imageCopy, backgroundCanvas, polyCanvas];
-    Vue.prototype.$flattenImage(flattenCanvas, drawn);
+    Vue.prototype.$flattenImage(flattenCanvas, imageCopy, backgroundCanvas, polyCanvas);
   }
 
   @Watch('backgroundVisible')
